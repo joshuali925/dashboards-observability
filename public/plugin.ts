@@ -3,25 +3,34 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import './index.scss';
-
 import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
+import {
+  ReactVisTypeOptions,
+  VisualizationsSetup,
+} from '../../../src/plugins/visualizations/public';
 import {
   observabilityID,
   observabilityPluginOrder,
   observabilityTitle,
 } from '../common/constants/shared';
-import PPLService from './services/requests/ppl';
-import DSLService from './services/requests/dsl';
-import TimestampUtils from './services/timestamp/timestamp';
-import SavedObjects from './services/saved_objects/event_analytics/saved_objects';
-import { AppPluginStartDependencies, ObservabilitySetup, ObservabilityStart } from './types';
+import { QueryManager } from '../common/query_manager';
+import { uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
-import { uiSettingsService } from '../common/utils';
-import { QueryManager } from '../common/query_manager';
+import { Traces } from './core_visualize/traces';
+import './index.scss';
+import DSLService from './services/requests/dsl';
+import PPLService from './services/requests/ppl';
+import SavedObjects from './services/saved_objects/event_analytics/saved_objects';
+import TimestampUtils from './services/timestamp/timestamp';
+import { AppPluginStartDependencies, ObservabilitySetup, ObservabilityStart } from './types';
+
+export interface SetupDependencies {
+  visualizations: VisualizationsSetup;
+}
+
 export class ObservabilityPlugin implements Plugin<ObservabilitySetup, ObservabilityStart> {
-  public setup(core: CoreSetup): ObservabilitySetup {
+  public setup(core: CoreSetup, setupDeps: SetupDependencies): ObservabilitySetup {
     uiSettingsService.init(core.uiSettings, core.notifications);
 
     // redirect legacy notebooks URL to current URL under observability
@@ -63,10 +72,83 @@ export class ObservabilityPlugin implements Plugin<ObservabilitySetup, Observabi
         );
       },
     });
+    const dependencies = {
+      uiSettings: core.uiSettings,
+      http: core.http,
+    };
+    this.getDefinitions().forEach((definition) => {
+      setupDeps.visualizations.createReactVisualization(definition);
+    });
 
     // Return methods that should be available to other plugins
     return {};
   }
+
+  public getDefinitions(): Array<ReactVisTypeOptions<unknown>> {
+    return [
+      {
+        name: 'observability_traces',
+        title: 'Observability Traces',
+        icon: 'apmTrace',
+        description: 'This visualization allows you to create a Gantt chart.',
+        visConfig: {
+          component: Traces,
+          defaults: {},
+        },
+        editorConfig: {
+          optionTabs: [{ name: 'editor', title: 'Data', editor: Traces }],
+        },
+        requestHandler: () => [],
+        responseHandler: (e: any) => e,
+      },
+      {
+        name: 'observability_metrics',
+        title: 'Observability Metrics',
+        icon: 'stats',
+        description: 'This visualization allows you to create a Gantt chart.',
+        visConfig: {
+          component: Traces,
+          defaults: {},
+        },
+        editorConfig: {
+          optionTabs: [{ name: 'editor', title: 'Data', editor: Traces }],
+        },
+        requestHandler: () => [],
+        responseHandler: (e: any) => e,
+      },
+      {
+        name: 'observability_applications',
+        title: 'Observability Applications',
+        icon: 'apps',
+        description: 'This visualization allows you to create a Gantt chart.',
+        visConfig: {
+          component: Traces,
+          defaults: {},
+        },
+        editorConfig: {
+          optionTabs: [{ name: 'editor', title: 'Data', editor: Traces }],
+        },
+        requestHandler: () => [],
+        responseHandler: (e: any) => e,
+      },
+      {
+        name: 'observability_visualizations',
+        title: 'Observability Visualizations',
+        icon: 'lensApp',
+        description: 'This visualization allows you to create a Gantt chart.',
+        visConfig: {
+          component: Traces,
+          defaults: {},
+        },
+        editorConfig: {
+          optionTabs: [{ name: 'editor', title: 'Data', editor: Traces }],
+        },
+        requestHandler: () => [],
+        responseHandler: (e: any) => e,
+      },
+    ];
+  }
+
   public start(core: CoreStart): ObservabilityStart {
     return {};
   }
