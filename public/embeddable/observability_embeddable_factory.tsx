@@ -60,40 +60,6 @@ export class ObservabilityEmbeddableFactoryDefinition
     return true;
   }
 
-  public async createFromSavedObject(
-    savedObjectId: string,
-    input: Partial<SavedObjectEmbeddableInput> & { id: string },
-    parent?: IContainer
-  ): Promise<ObservabilityEmbeddable | ErrorEmbeddable> {
-    try {
-      // const savedVisBuilder = await getSavedVisBuilderLoader().get(savedObjectId);
-      const editPath = `/edit/${savedObjectId}`;
-      // const editUrl = getHttp().basePath.prepend(`/app/dashboards-observability{editPath}`);
-
-      return new ObservabilityEmbeddable(
-        // getTimeFilter(),
-        undefined,
-        {
-          // savedVisBuilder,
-          undefined,
-          editUrl: '/',
-          editPath,
-          editable: true,
-        },
-        {
-          ...input,
-          savedObjectId: input.savedObjectId ?? '',
-        },
-        {
-          parent,
-        }
-      );
-    } catch (e) {
-      console.error(e); // eslint-disable-line no-console
-      return new ErrorEmbeddable(e as Error, input, parent);
-    }
-  }
-
   public async create(_input: SavedObjectEmbeddableInput, _parent?: IContainer) {
     return undefined;
   }
