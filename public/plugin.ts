@@ -4,6 +4,8 @@
  */
 
 import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
+import { DataPublicPluginSetup } from '../../../src/plugins/data/public';
+import { EmbeddableSetup } from '../../../src/plugins/embeddable/public';
 import {
   ReactVisTypeOptions,
   VisualizationsSetup,
@@ -18,6 +20,8 @@ import { uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
 import { Traces } from './core_visualize/traces';
+import { OBSERVABILITY_EMBEDDABLE } from './embeddable/observability_embeddable';
+import { ObservabilityEmbeddableFactoryDefinition } from './embeddable/observability_embeddable_factory';
 import './index.scss';
 import DSLService from './services/requests/dsl';
 import PPLService from './services/requests/ppl';
@@ -26,7 +30,9 @@ import TimestampUtils from './services/timestamp/timestamp';
 import { AppPluginStartDependencies, ObservabilitySetup, ObservabilityStart } from './types';
 
 export interface SetupDependencies {
+  embeddable: EmbeddableSetup;
   visualizations: VisualizationsSetup;
+  data: DataPublicPluginSetup;
 }
 
 export class ObservabilityPlugin implements Plugin<ObservabilitySetup, ObservabilityStart> {
@@ -80,6 +86,9 @@ export class ObservabilityPlugin implements Plugin<ObservabilitySetup, Observabi
       setupDeps.visualizations.createReactVisualization(definition);
     });
 
+    const embeddableFactory = new ObservabilityEmbeddableFactoryDefinition();
+    setupDeps.embeddable.registerEmbeddableFactory(OBSERVABILITY_EMBEDDABLE, embeddableFactory);
+
     // Return methods that should be available to other plugins
     return {};
   }
@@ -97,6 +106,11 @@ export class ObservabilityPlugin implements Plugin<ObservabilitySetup, Observabi
         },
         editorConfig: {
           optionTabs: [{ name: 'editor', title: 'Data', editor: Traces }],
+        },
+        options: {
+          showIndexSelection: false,
+          showQueryBar: false,
+          showFilterBar: false,
         },
         requestHandler: () => [],
         responseHandler: (e: any) => e,
