@@ -1,13 +1,12 @@
+import { OverlayStart, SavedObjectsClientContract } from '../../../../src/core/public';
+import { DashboardStart } from '../../../../src/plugins/dashboard/public';
 /*
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import {
-  EmbeddableFactory,
   EmbeddableFactoryDefinition,
   EmbeddableOutput,
-  ErrorEmbeddable,
   IContainer,
   SavedObjectEmbeddableInput,
 } from '../../../../src/plugins/embeddable/public';
@@ -21,13 +20,12 @@ import {
   OBSERVABILITY_EMBEDDABLE,
 } from './observability_embeddable';
 
-// TODO: use or remove?
-export type ObservabilityEmbeddableFactory = EmbeddableFactory<
-  SavedObjectEmbeddableInput,
-  ObservabilityOutput | EmbeddableOutput,
-  ObservabilityEmbeddable,
-  ObservabilitySavedObjectAttributes
->;
+interface StartServices {
+  getAttributeService: DashboardStart['getAttributeService'];
+  openModal: OverlayStart['openModal'];
+  savedObjectsClient: SavedObjectsClientContract;
+  overlays: OverlayStart;
+}
 
 export class ObservabilityEmbeddableFactoryDefinition
   implements
@@ -36,35 +34,39 @@ export class ObservabilityEmbeddableFactoryDefinition
       ObservabilityOutput | EmbeddableOutput,
       ObservabilityEmbeddable,
       ObservabilitySavedObjectAttributes
-    > {
+    >
+{
   public readonly type = OBSERVABILITY_EMBEDDABLE;
   public readonly savedObjectMetaData = {
-    // TODO: Update to include most vis functionality
-    name: 'observability',
+    name: 'Observability',
     includeFields: ['visualizationState'],
     type: OBSERVABILITY_SAVED_OBJECT,
-    getIconForSavedObject: () => '',
+    getIconForSavedObject: () => 'pencil',
   };
 
-  // TODO: Would it be better to explicitly declare start service dependencies?
-  constructor() {}
+  constructor(private getStartServices: () => Promise<StartServices>) {}
 
-  public canCreateNew() {
-    // Because Observability creation starts with the visualization modal, no need to have a separate entry for Observability until it's separate
-    return false;
+  async createFromSavedObject(
+    savedObjectId: string,
+    input: SavedObjectEmbeddableInput,
+    parent?: IContainer
+  ) {
+    console.log('❗savedObjectId:', savedObjectId);
+    console.log('❗saved object input:', input);
+    return this.create(input, parent);
   }
 
-  public async isEditable() {
+  async create(initialInput: SavedObjectEmbeddableInput, parent?: IContainer) {
+    return new ObservabilityEmbeddable(initialInput, { parent });
+  }
+
+  async isEditable() {
     // TODO: Add proper access controls
     // return getCapabilities().visualize.save as boolean;
     return true;
   }
 
-  public async create(_input: SavedObjectEmbeddableInput, _parent?: IContainer) {
-    return undefined;
-  }
-
-  public getDisplayName() {
-    return 'dashboards-observability';
+  getDisplayName() {
+    return 'Observability';
   }
 }

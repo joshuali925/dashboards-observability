@@ -14,6 +14,7 @@ import {
 import { OpenSearchObservabilityPlugin } from './adaptors/opensearch_observability_plugin';
 import { PPLPlugin } from './adaptors/ppl_plugin';
 import { setupRoutes } from './routes/index';
+import { observabilitySavedObject } from './saved_objects/observability_saved_object';
 import { ObservabilityPluginSetup, ObservabilityPluginStart } from './types';
 
 export class ObservabilityPlugin
@@ -47,6 +48,8 @@ export class ObservabilityPlugin
 
     // Register server side APIs
     setupRoutes({ router, client: openSearchObservabilityClient });
+
+    core.savedObjects.registerType(observabilitySavedObject);
 
     return {};
   }
