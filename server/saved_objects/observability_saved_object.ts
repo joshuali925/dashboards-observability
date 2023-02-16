@@ -14,6 +14,9 @@ export const observabilitySavedObject: SavedObjectsType = {
       title: {
         type: 'text',
       },
+      description: {
+        type: 'text',
+      },
       version: { type: 'integer' },
     },
   },

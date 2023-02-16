@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
 import React from 'react';
-import { SavedObjectEmbeddableInput, withEmbeddableSubscription } from '../../../../src/plugins/embeddable/public';
+import {
+  SavedObjectEmbeddableInput,
+  withEmbeddableSubscription,
+} from '../../../../src/plugins/embeddable/public';
 import { ObservabilityEmbeddable, ObservabilityOutput } from './observability_embeddable';
 
 interface ObservabilityEmbeddableComponentProps {
@@ -14,14 +16,18 @@ interface ObservabilityEmbeddableComponentProps {
   embeddable: ObservabilityEmbeddable;
 }
 
-const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableComponentProps> = (props) => {
-  console.log('❗inner props:', props);
+const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableComponentProps> = (
+  props
+) => {
   return (
     <>
-        <div>test obs</div>
+      <div>{JSON.stringify(props.output.attributes, null, 2)}</div>
+      {/* <Visualization
+        visualizations={}
+      /> */}
     </>
-  )
-}
+  );
+};
 
 export const ObservabilityEmbeddableComponent = withEmbeddableSubscription<
   SavedObjectEmbeddableInput,
