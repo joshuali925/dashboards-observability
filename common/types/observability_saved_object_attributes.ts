@@ -4,17 +4,19 @@
  */
 
 import { SavedObjectAttributes } from '../../../../src/core/types';
+import { SavedVisualization } from './explorer';
 
 export const OBSERVABILITY_SAVED_OBJECT = 'observability';
 
 export interface ObservabilitySavedObjectAttributes extends SavedObjectAttributes {
   title: string;
   description?: string;
-  visualizationState?: string;
+  version: number;
+  savedVisualization?: SavedVisualization;
+  /* visualizationState?: string;
   updated_at?: string;
   styleState?: string;
-  version: number;
   searchSourceFields?: {
     index?: string;
-  };
+  }; */
 }
