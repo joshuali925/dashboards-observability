@@ -3,9 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
+import {
+  AppMountParameters,
+  CoreSetup,
+  CoreStart,
+  Plugin,
+  SavedObjectsClient,
+} from '../../../src/core/public';
+import { DashboardStart } from '../../../src/plugins/dashboard/public';
 import { DataPublicPluginSetup } from '../../../src/plugins/data/public';
-import { EmbeddableSetup } from '../../../src/plugins/embeddable/public';
+import { EmbeddableSetup, EmbeddableStart } from '../../../src/plugins/embeddable/public';
+import { UiActionsStart } from '../../../src/plugins/ui_actions/public';
 import {
   ReactVisTypeOptions,
   VisualizationsSetup,
@@ -16,6 +24,10 @@ import {
   observabilityTitle,
 } from '../common/constants/shared';
 import { QueryManager } from '../common/query_manager';
+import {
+  ObservabilitySavedObjectAttributes,
+  OBSERVABILITY_SAVED_OBJECT,
+} from '../common/types/observability_saved_object_attributes';
 import { uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
@@ -33,10 +45,22 @@ export interface SetupDependencies {
   embeddable: EmbeddableSetup;
   visualizations: VisualizationsSetup;
   data: DataPublicPluginSetup;
+  uiActions: UiActionsStart;
 }
 
-export class ObservabilityPlugin implements Plugin<ObservabilitySetup, ObservabilityStart> {
-  public setup(core: CoreSetup, setupDeps: SetupDependencies): ObservabilitySetup {
+export interface StartDependencies {
+  embeddable: EmbeddableStart;
+  dashboard: DashboardStart;
+  savedObjectsClient: SavedObjectsClient;
+}
+
+export class ObservabilityPlugin
+  implements Plugin<ObservabilitySetup, ObservabilityStart, SetupDependencies, StartDependencies>
+{
+  public setup(
+    core: CoreSetup<StartDependencies>,
+    setupDeps: SetupDependencies
+  ): ObservabilitySetup {
     uiSettingsService.init(core.uiSettings, core.notifications);
 
     // redirect legacy notebooks URL to current URL under observability
@@ -78,15 +102,16 @@ export class ObservabilityPlugin implements Plugin<ObservabilitySetup, Observabi
         );
       },
     });
-    const dependencies = {
-      uiSettings: core.uiSettings,
-      http: core.http,
-    };
     this.getDefinitions().forEach((definition) => {
       setupDeps.visualizations.createReactVisualization(definition);
     });
 
-    const embeddableFactory = new ObservabilityEmbeddableFactoryDefinition();
+    const embeddableFactory = new ObservabilityEmbeddableFactoryDefinition(async () => ({
+      getAttributeService: (await core.getStartServices())[1].dashboard.getAttributeService,
+      openModal: (await core.getStartServices())[0].overlays.openModal,
+      savedObjectsClient: (await core.getStartServices())[0].savedObjects.client,
+      overlays: (await core.getStartServices())[0].overlays,
+    }));
     setupDeps.embeddable.registerEmbeddableFactory(OBSERVABILITY_EMBEDDABLE, embeddableFactory);
 
     // Return methods that should be available to other plugins
@@ -164,6 +189,17 @@ export class ObservabilityPlugin implements Plugin<ObservabilitySetup, Observabi
   }
 
   public start(core: CoreStart): ObservabilityStart {
+    core.savedObjects.client.create<ObservabilitySavedObjectAttributes>(
+      OBSERVABILITY_SAVED_OBJECT,
+      {
+        title: 'Test embeddable observability',
+        version: 1,
+      },
+      {
+        id: 'observability-sample-embeddable',
+        overwrite: true,
+      }
+    );
     return {};
   }
   public stop() {}
