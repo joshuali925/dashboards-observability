@@ -193,6 +193,7 @@ export class ObservabilityPlugin
       OBSERVABILITY_SAVED_OBJECT,
       {
         title: 'Test embeddable observability',
+        description: 'custome field',
         version: 1,
       },
       {
