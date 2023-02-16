@@ -29,6 +29,7 @@ import {
   OBSERVABILITY_SAVED_OBJECT,
 } from '../common/types/observability_saved_object_attributes';
 import { uiSettingsService } from '../common/utils';
+import { setPPLService } from '../common/utils/settings_service';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
 import { Traces } from './core_visualize/traces';
@@ -62,6 +63,8 @@ export class ObservabilityPlugin
     setupDeps: SetupDependencies
   ): ObservabilitySetup {
     uiSettingsService.init(core.uiSettings, core.notifications);
+    const pplService = new PPLService(core.http);
+    setPPLService(pplService);
 
     // redirect legacy notebooks URL to current URL under observability
     if (window.location.pathname.includes('notebooks-dashboards')) {
@@ -85,7 +88,6 @@ export class ObservabilityPlugin
       async mount(params: AppMountParameters) {
         const { Observability } = await import('./components/index');
         const [coreStart, depsStart] = await core.getStartServices();
-        const pplService = new PPLService(coreStart.http);
         const dslService = new DSLService(coreStart.http);
         const savedObjects = new SavedObjects(coreStart.http);
         const timestampUtils = new TimestampUtils(dslService, pplService);
@@ -193,8 +195,28 @@ export class ObservabilityPlugin
       OBSERVABILITY_SAVED_OBJECT,
       {
         title: 'Test embeddable observability',
-        description: 'custome field',
+        description: 'custome desc',
         version: 1,
+        savedVisualization: {
+          name: '[Logs] Daily count for error response codes',
+          description: '',
+          query:
+            "source = opensearch_dashboards_sample_data_logs | where response='503' or response='404' | stats count() by span(timestamp,1d)",
+          type: 'bar',
+          selected_date_range: {
+            start: 'now/y',
+            end: 'now',
+            text: '',
+          },
+          selected_timestamp: {
+            name: 'timestamp',
+            type: 'timestamp',
+          },
+          selected_fields: {
+            text: '',
+            tokens: [],
+          },
+        },
       },
       {
         id: 'observability-sample-embeddable',

@@ -10,6 +10,7 @@ export const observabilitySavedObject: SavedObjectsType = {
   hidden: false,
   namespaceType: 'single',
   mappings: {
+    dynamic: false,
     properties: {
       title: {
         type: 'text',

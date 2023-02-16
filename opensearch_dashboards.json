@@ -12,6 +12,7 @@
     "inspector",
     "navigation",
     "opensearchDashboardsReact",
+    "opensearchDashboardsUtils",
     "savedObjects",
     "uiActions",
     "urlForwarding",

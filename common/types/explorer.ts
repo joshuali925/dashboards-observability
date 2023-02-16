@@ -33,7 +33,7 @@ import SavedObjects from '../../public/services/saved_objects/event_analytics/sa
 import TimestampUtils from '../../public/services/timestamp/timestamp';
 import PPLService from '../../public/services/requests/ppl';
 import DSLService from '../../public/services/requests/dsl';
-import { SavedObjectsStart } from '../../../../src/core/public/saved_objects';
+import { SavedObjectAttributes, SavedObjectsStart } from '../../../../src/core/public/saved_objects';
 
 export interface IQueryTab {
   id: string;
@@ -41,7 +41,7 @@ export interface IQueryTab {
   content: React.ReactNode;
 }
 
-export interface IField {
+export interface IField extends SavedObjectAttributes{
   name: string;
   type: string;
   label?: string;
@@ -152,7 +152,7 @@ export interface SavedQuery {
   selected_timestamp: IField;
 }
 
-export interface SavedVisualization {
+export interface SavedVisualization extends SavedObjectAttributes {
   description: string;
   name: string;
   query: string;
