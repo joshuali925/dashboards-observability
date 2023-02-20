@@ -5,6 +5,7 @@
 
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { SizeMe } from 'react-sizeme';
 import {
   SavedObjectEmbeddableInput,
   withEmbeddableSubscription,
@@ -103,7 +104,13 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
       });
   }, [props]);
 
-  return <>{visContainerProps && <Visualization visualizations={visContainerProps} />}</>;
+  return (
+    <>
+      {visContainerProps && (
+        <SizeMe>{({ size }) => <Visualization visualizations={visContainerProps} />}</SizeMe>
+      )}
+    </>
+  );
 };
 
 export const ObservabilityEmbeddableComponent = withEmbeddableSubscription<
