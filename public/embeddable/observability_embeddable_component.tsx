@@ -11,7 +11,7 @@ import {
 } from '../../../../src/plugins/embeddable/public';
 import { QueryManager } from '../../common/query_manager';
 import { IVisualizationContainerProps } from '../../common/types/explorer';
-import { removeBacktick } from '../../common/utils';
+import { composeFinalQuery, removeBacktick } from '../../common/utils';
 import { getPPLService } from '../../common/utils/settings_service';
 import { getDefaultVisConfig } from '../components/event_analytics/utils';
 import { getVizContainerProps } from '../components/visualizations/charts/helpers';
@@ -27,14 +27,14 @@ interface ObservabilityEmbeddableComponentProps {
 const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableComponentProps> = (
   props
 ) => {
-  console.log('❗embeddable attributes:', props.output.attributes);
   const [visContainerProps, setVisContainerProps] = useState<IVisualizationContainerProps>();
-  const pplService = getPPLService();
 
   useEffect(() => {
     const visualization = props.output.attributes?.savedVisualization!;
-    console.log('❗visualization:', visualization);
+    console.log('❗props:', props);
     if (!visualization) return;
+
+    const pplService = getPPLService();
     const metaData = { ...visualization, query: visualization.query };
     const dataConfig = { ...(metaData.user_configs?.dataConfig || {}) };
     const hasBreakdowns = !_.isEmpty(dataConfig.breakdowns);
@@ -70,8 +70,22 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
       },
     };
 
+    let query = metaData.query;
+
+    if (props.input.timeRange) {
+      query = composeFinalQuery(
+        metaData.query,
+        props.input.timeRange.from,
+        props.input.timeRange.to,
+        visualization.selected_timestamp.name,
+        false,
+        ''
+      );
+      console.log('❗query:', query);
+    }
+
     pplService
-      .fetch({ query: visualization.query, format: 'viz' })
+      .fetch({ query, format: 'viz' })
       .then((data) => {
         const p = getVizContainerProps({
           vizId: visualization.type,
@@ -89,13 +103,7 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
       });
   }, [props]);
 
-  return (
-    <>
-      {/* <div>{JSON.stringify(props.output.attributes, null, 2)}</div> */}
-      {/* <Visualization visualizations={sampleVisProps} /> */}
-      {visContainerProps && <Visualization visualizations={visContainerProps} />}
-    </>
-  );
+  return <>{visContainerProps && <Visualization visualizations={visContainerProps} />}</>;
 };
 
 export const ObservabilityEmbeddableComponent = withEmbeddableSubscription<
