@@ -356,11 +356,21 @@ export const Explorer = ({
 
   const fetchData = async (startingTime?: string, endingTime?: string) => {
     const curQuery = queryRef.current;
+
+    // sql spark
+    if (curQuery![RAW_QUERY].match(/spark/g)) {
+      if (tabId === TYPE_TAB_MAPPING[SAVED_QUERY]) {
+        return getEvents(curQuery![RAW_QUERY]);
+      } else {
+        return getVisualizations();
+      }
+    }
+
     const rawQueryStr = (curQuery![RAW_QUERY] as string).includes(appBaseQuery)
       ? curQuery![RAW_QUERY]
       : buildQuery(appBasedRef.current, curQuery![RAW_QUERY]);
     const curIndex = getIndexPatternFromRawQuery(rawQueryStr);
-
+    console.log('curIndex: ', curIndex);
     if (isEmpty(rawQueryStr)) return;
 
     if (isEmpty(curIndex)) {
