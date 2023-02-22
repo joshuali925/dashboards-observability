@@ -124,7 +124,7 @@ export class ObservabilityPlugin
     return [
       {
         name: 'observability_traces',
-        title: 'Observability Traces',
+        title: 'Federated',
         icon: 'apmTrace',
         description: 'This visualization allows you to create a Gantt chart.',
         visConfig: {
@@ -144,7 +144,7 @@ export class ObservabilityPlugin
       },
       {
         name: 'observability_metrics',
-        title: 'Observability Metrics',
+        title: 'PromQL',
         icon: 'stats',
         description: 'This visualization allows you to create a Gantt chart.',
         visConfig: {
@@ -159,8 +159,8 @@ export class ObservabilityPlugin
       },
       {
         name: 'observability_applications',
-        title: 'Observability Applications',
-        icon: 'apps',
+        title: 'PPL',
+        icon: 'lensApp',
         description: 'This visualization allows you to create a Gantt chart.',
         visConfig: {
           component: Traces,
@@ -174,7 +174,7 @@ export class ObservabilityPlugin
       },
       {
         name: 'observability_visualizations',
-        title: 'Observability Visualizations',
+        title: 'SQL',
         icon: 'lensApp',
         description: 'This visualization allows you to create a Gantt chart.',
         visConfig: {
@@ -194,7 +194,7 @@ export class ObservabilityPlugin
     core.savedObjects.client.create<ObservabilitySavedObjectAttributes>(
       OBSERVABILITY_SAVED_OBJECT,
       {
-        title: 'Test embeddable observability',
+        title: '[Logs] Daily count for error response codes',
         description: 'custome desc',
         version: 1,
         savedVisualization: {

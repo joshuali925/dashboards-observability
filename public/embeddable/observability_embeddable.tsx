@@ -88,13 +88,11 @@ export class ObservabilityEmbeddable
 
   readonly getInputAsValueType = async (): Promise<SavedObjectEmbeddableInput> => {
     const input = this.attributeService.getExplicitInputFromEmbeddable(this);
-    console.log('❗input as value type:', input);
     return this.attributeService.getInputAsValueType(input);
   };
 
   readonly getInputAsRefType = async (): Promise<SavedObjectEmbeddableInput> => {
     const input = this.attributeService.getExplicitInputFromEmbeddable(this);
-    console.log('❗input as ref type:', input);
     return this.attributeService.getInputAsRefType(input, {
       showSaveModal: true,
       saveModalTitle: this.getTitle(),
@@ -111,7 +109,6 @@ export class ObservabilityEmbeddable
 
   public async reload() {
     this.attributes = await this.attributeService.unwrapAttributes(this.input);
-    console.log('❗reload attributes:', this.attributes);
 
     this.updateOutput({
       attributes: this.attributes,

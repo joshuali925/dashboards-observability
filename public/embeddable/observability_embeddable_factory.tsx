@@ -39,10 +39,10 @@ export class ObservabilityEmbeddableFactoryDefinition
 {
   public readonly type = OBSERVABILITY_EMBEDDABLE;
   public readonly savedObjectMetaData = {
-    name: 'Observability',
+    name: 'SQL/PPL Visualizations',
     includeFields: ['visualizationState'],
     type: OBSERVABILITY_SAVED_OBJECT,
-    getIconForSavedObject: () => 'pencil',
+    getIconForSavedObject: () => 'lensApp',
   };
   private attributeService?: AttributeService<ObservabilitySavedObjectAttributes>;
 
@@ -61,8 +61,6 @@ export class ObservabilityEmbeddableFactoryDefinition
   }
 
   async isEditable() {
-    // TODO: Add proper access controls
-    // return getCapabilities().visualize.save as boolean;
     return true;
   }
 
