@@ -238,7 +238,6 @@ export const renderSavedVisualization = async (
   let updatedVisualizationQuery = '';
 
   visualization = await fetchVisualizationById(http, savedVisualizationId, setIsError);
-  console.log('❗observability visualization object:', visualization);
 
   if (_.isEmpty(visualization)) {
     setIsLoading(false);

@@ -31,8 +31,7 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
   const [visContainerProps, setVisContainerProps] = useState<IVisualizationContainerProps>();
 
   useEffect(() => {
-    const visualization = props.output.attributes?.savedVisualization!;
-    console.log('❗props:', props);
+    const visualization = props.output.attributes?.savedVisualization;
     if (!visualization) return;
 
     const pplService = getPPLService();
@@ -82,7 +81,6 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
         false,
         ''
       );
-      console.log('❗query:', query);
     }
 
     pplService
@@ -96,7 +94,6 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
           userConfigs: mixedUserConfigs,
           explorer: { explorerData: data, explorerFields: data.metadata.fields },
         });
-        console.log('❗p:', p);
         setVisContainerProps(p);
       })
       .catch((error: Error) => {
