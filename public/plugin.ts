@@ -3,21 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  AppMountParameters,
-  CoreSetup,
-  CoreStart,
-  Plugin,
-  SavedObjectsClient,
-} from '../../../src/core/public';
-import { DashboardStart } from '../../../src/plugins/dashboard/public';
-import { DataPublicPluginSetup } from '../../../src/plugins/data/public';
-import { EmbeddableSetup, EmbeddableStart } from '../../../src/plugins/embeddable/public';
-import { UiActionsStart } from '../../../src/plugins/ui_actions/public';
-import {
-  ReactVisTypeOptions,
-  VisualizationsSetup,
-} from '../../../src/plugins/visualizations/public';
+import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
+import { ReactVisTypeOptions } from '../../../src/plugins/visualizations/public';
 import {
   observabilityID,
   observabilityPluginOrder,
@@ -28,8 +15,7 @@ import {
   ObservabilitySavedObjectAttributes,
   OBSERVABILITY_SAVED_OBJECT,
 } from '../common/types/observability_saved_object_attributes';
-import { uiSettingsService } from '../common/utils';
-import { setPPLService } from '../common/utils/settings_service';
+import { setPPLService, uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
 import { Traces } from './core_visualize/traces';
@@ -40,26 +26,19 @@ import DSLService from './services/requests/dsl';
 import PPLService from './services/requests/ppl';
 import SavedObjects from './services/saved_objects/event_analytics/saved_objects';
 import TimestampUtils from './services/timestamp/timestamp';
-import { AppPluginStartDependencies, ObservabilitySetup, ObservabilityStart } from './types';
-
-export interface SetupDependencies {
-  embeddable: EmbeddableSetup;
-  visualizations: VisualizationsSetup;
-  data: DataPublicPluginSetup;
-  uiActions: UiActionsStart;
-}
-
-export interface StartDependencies {
-  embeddable: EmbeddableStart;
-  dashboard: DashboardStart;
-  savedObjectsClient: SavedObjectsClient;
-}
+import {
+  AppPluginStartDependencies,
+  ObservabilitySetup,
+  ObservabilityStart,
+  SetupDependencies,
+} from './types';
 
 export class ObservabilityPlugin
-  implements Plugin<ObservabilitySetup, ObservabilityStart, SetupDependencies, StartDependencies>
+  implements
+    Plugin<ObservabilitySetup, ObservabilityStart, SetupDependencies, AppPluginStartDependencies>
 {
   public setup(
-    core: CoreSetup<StartDependencies>,
+    core: CoreSetup<AppPluginStartDependencies>,
     setupDeps: SetupDependencies
   ): ObservabilitySetup {
     uiSettingsService.init(core.uiSettings, core.notifications);
@@ -89,12 +68,12 @@ export class ObservabilityPlugin
         const { Observability } = await import('./components/index');
         const [coreStart, depsStart] = await core.getStartServices();
         const dslService = new DSLService(coreStart.http);
-        const savedObjects = new SavedObjects(coreStart.http);
+        const savedObjects = new SavedObjects(coreStart.http, coreStart.savedObjects.client);
         const timestampUtils = new TimestampUtils(dslService, pplService);
         const qm = new QueryManager();
         return Observability(
           coreStart,
-          depsStart as AppPluginStartDependencies,
+          depsStart,
           params,
           pplService,
           dslService,

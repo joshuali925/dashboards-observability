@@ -13,7 +13,7 @@ import {
 import { QueryManager } from '../../common/query_manager';
 import { IVisualizationContainerProps } from '../../common/types/explorer';
 import { composeFinalQuery, removeBacktick } from '../../common/utils';
-import { getPPLService } from '../../common/utils/settings_service';
+import { getPPLService } from '../../common/utils';
 import { getDefaultVisConfig } from '../components/event_analytics/utils';
 import { getVizContainerProps } from '../components/visualizations/charts/helpers';
 import { Visualization } from '../components/visualizations/visualization';
