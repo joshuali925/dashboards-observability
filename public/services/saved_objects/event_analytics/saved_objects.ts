@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { has, isEmpty, isArray } from 'lodash';
 import { IField } from 'common/types/explorer';
+import { has, isArray, isEmpty } from 'lodash';
+import { HttpStart, SavedObjectsClientContract } from '../../../../../../src/core/public';
+import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
 import {
-  OBSERVABILITY_BASE,
   EVENT_ANALYTICS,
+  OBSERVABILITY_BASE,
   SAVED_OBJECTS,
   SAVED_QUERY,
   SAVED_VISUALIZATION,
 } from '../../../../common/constants/shared';
-import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
 
 const CONCAT_FIELDS = ['objectIdList', 'objectType'];
 
@@ -45,7 +46,10 @@ interface IBulkUpdateSavedVisualizationRquest {
 
 // eslint-disable-next-line import/no-default-export
 export default class SavedObjects {
-  constructor(private readonly http: any) {}
+  constructor(
+    private readonly http: HttpStart,
+    private readonly savedObjectClient: SavedObjectsClientContract
+  ) {}
 
   buildRequestBody({
     query,
