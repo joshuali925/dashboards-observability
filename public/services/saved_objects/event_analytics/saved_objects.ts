@@ -5,7 +5,7 @@
 
 import { IField } from 'common/types/explorer';
 import { has, isArray, isEmpty } from 'lodash';
-import { HttpStart, SavedObjectsClientContract } from '../../../../../../src/core/public';
+import { HttpStart, SavedObjectsClientContract, SavedObjectsFindOptions } from '../../../../../../src/core/public';
 import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
 import {
   EVENT_ANALYTICS,
@@ -14,6 +14,10 @@ import {
   SAVED_QUERY,
   SAVED_VISUALIZATION,
 } from '../../../../common/constants/shared';
+import {
+  ObservabilitySavedObjectAttributes,
+  OBSERVABILITY_SAVED_OBJECT,
+} from '../../../../common/types/observability_saved_object_attributes';
 
 const CONCAT_FIELDS = ['objectIdList', 'objectType'];
 
@@ -48,7 +52,7 @@ interface IBulkUpdateSavedVisualizationRquest {
 export default class SavedObjects {
   constructor(
     private readonly http: HttpStart,
-    private readonly savedObjectClient: SavedObjectsClientContract
+    private readonly savedObjectsClient: SavedObjectsClientContract
   ) {}
 
   buildRequestBody({
@@ -121,17 +125,25 @@ export default class SavedObjects {
   }
 
   async fetchSavedObjects(params: ISavedObjectRequestParams) {
+    console.log('❗params:', params);
     // turn array into string. exmaple objectType ['savedQuery', 'savedVisualization'] =>
     // 'savedQuery,savedVisualization'
     CONCAT_FIELDS.map((arrayField) => {
       this.stringifyList(params, arrayField, ',');
     });
 
-    return await this.http.get(`${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}`, {
+    const list = await this.savedObjectsClient.find<ObservabilitySavedObjectAttributes>({
+      type: OBSERVABILITY_SAVED_OBJECT,
+    });
+    console.log('❗list:', list);
+
+    const res = await this.http.get(`${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}`, {
       query: {
         ...params,
       },
     });
+    console.log('❗res:', res);
+    return res;
   }
 
   async fetchCustomPanels() {
@@ -171,12 +183,25 @@ export default class SavedObjects {
 
     finalParams.object_id = params.objectId;
 
-    return await this.http.put(
+    const res = await this.savedObjectsClient.update<ObservabilitySavedObjectAttributes>(
+      OBSERVABILITY_SAVED_OBJECT,
+      params.objectId,
+      {
+        title: params.name,
+        description: params.description,
+        version: 1,
+        savedVisualization: finalParams.object,
+      }
+    );
+    console.log('❗res:', res);
+    return { objectId: res.id };
+
+    /* return await this.http.put(
       `${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}${SAVED_VISUALIZATION}`,
       {
         body: JSON.stringify(finalParams),
       }
-    );
+    ); */
   }
 
   async updateSavedQueryById(params: any) {
@@ -208,12 +233,14 @@ export default class SavedObjects {
       timestamp: params.timestamp,
     });
 
-    return await this.http.post(
+    const res = await this.http.post(
       `${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}${SAVED_QUERY}`,
       {
         body: JSON.stringify(finalParams),
       }
     );
+    console.log('❗res:', res);
+    return res;
   }
 
   async createSavedVisualization(params: any) {
@@ -231,13 +258,23 @@ export default class SavedObjects {
       unitsOfMeasure: params.unitsOfMeasure,
       selectedLabels: params.selectedLabels,
     });
+    const res = await this.savedObjectsClient.create<ObservabilitySavedObjectAttributes>(
+      OBSERVABILITY_SAVED_OBJECT,
+      {
+        title: params.name,
+        description: params.description,
+        version: 1,
+        savedVisualization: finalParams.object,
+      }
+    );
+    return { objectId: res.id };
 
-    return await this.http.post(
+    /* return await this.http.post(
       `${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}${SAVED_VISUALIZATION}`,
       {
         body: JSON.stringify(finalParams),
       }
-    );
+    ); */
   }
 
   async deleteSavedObjectsList(deleteObjectRequest: any) {

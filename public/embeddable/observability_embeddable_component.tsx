@@ -32,6 +32,7 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
 
   useEffect(() => {
     const visualization = props.output.attributes?.savedVisualization;
+    console.log('❗visualization:', visualization);
     if (!visualization) return;
 
     const pplService = getPPLService();
