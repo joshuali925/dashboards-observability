@@ -15,16 +15,16 @@ import {
   SavedObjectEmbeddableInput,
 } from '../../../../src/plugins/embeddable/public';
 import {
-  ObservabilitySavedObjectAttributes,
-  OBSERVABILITY_SAVED_OBJECT,
+  VisualizationSavedObjectAttributes,
+  VISUALIZATION_SAVED_OBJECT,
 } from '../../common/types/observability_saved_object_attributes';
 import { ObservabilityEmbeddableComponent } from './observability_embeddable_component';
 
 // Apparently this needs to match the saved object type for the clone and replace panel actions to work
-export const OBSERVABILITY_EMBEDDABLE = OBSERVABILITY_SAVED_OBJECT;
+export const OBSERVABILITY_EMBEDDABLE = VISUALIZATION_SAVED_OBJECT;
 
 export interface ObservabilityEmbeddableConfiguration {
-  savedVisBuilder: ObservabilitySavedObjectAttributes;
+  savedVisBuilder: VisualizationSavedObjectAttributes;
   // TODO: add indexPatterns as part of configuration
   // indexPatterns?: IIndexPattern[];
   editPath: string;
@@ -33,7 +33,7 @@ export interface ObservabilityEmbeddableConfiguration {
 }
 
 export type ObservabilityByValueInput = {
-  attributes: ObservabilitySavedObjectAttributes;
+  attributes: VisualizationSavedObjectAttributes;
 } & SavedObjectEmbeddableInput;
 
 export interface ObservabilityOutput extends EmbeddableOutput {
@@ -41,7 +41,7 @@ export interface ObservabilityOutput extends EmbeddableOutput {
    * Will contain the saved object attributes of the Observability Saved Object that matches
    * `input.savedObjectId`. If the id is invalid, this may be undefined.
    */
-  attributes?: ObservabilitySavedObjectAttributes;
+  attributes?: VisualizationSavedObjectAttributes;
 }
 
 export class ObservabilityEmbeddable
@@ -52,11 +52,11 @@ export class ObservabilityEmbeddable
   private subscription: Subscription;
   private node?: HTMLElement;
   private savedObjectId?: string;
-  private attributes?: ObservabilitySavedObjectAttributes;
+  private attributes?: VisualizationSavedObjectAttributes;
 
   constructor(
     initialInput: SavedObjectEmbeddableInput,
-    private attributeService: AttributeService<ObservabilitySavedObjectAttributes>,
+    private attributeService: AttributeService<VisualizationSavedObjectAttributes>,
     {
       parent,
     }: {

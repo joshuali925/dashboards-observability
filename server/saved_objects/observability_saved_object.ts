@@ -4,9 +4,10 @@
  */
 
 import { SavedObjectsType } from '../../../../src/core/server';
+import { VISUALIZATION_SAVED_OBJECT } from '../../common/types/observability_saved_object_attributes';
 
-export const observabilitySavedObject: SavedObjectsType = {
-  name: 'observability',
+export const visualizationSavedObject: SavedObjectsType = {
+  name: VISUALIZATION_SAVED_OBJECT,
   hidden: false,
   namespaceType: 'single',
   mappings: {

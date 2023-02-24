@@ -12,8 +12,8 @@ import {
 } from '../../../../src/plugins/embeddable/public';
 import { checkForDuplicateTitle, OnSaveProps } from '../../../../src/plugins/saved_objects/public';
 import {
-  ObservabilitySavedObjectAttributes,
-  OBSERVABILITY_SAVED_OBJECT,
+  VisualizationSavedObjectAttributes,
+  VISUALIZATION_SAVED_OBJECT,
 } from '../../common/types/observability_saved_object_attributes';
 import {
   ObservabilityEmbeddable,
@@ -34,17 +34,17 @@ export class ObservabilityEmbeddableFactoryDefinition
       SavedObjectEmbeddableInput,
       ObservabilityOutput | EmbeddableOutput,
       ObservabilityEmbeddable,
-      ObservabilitySavedObjectAttributes
+      VisualizationSavedObjectAttributes
     >
 {
   public readonly type = OBSERVABILITY_EMBEDDABLE;
   public readonly savedObjectMetaData = {
     name: 'SQL/PPL Visualizations',
     includeFields: ['visualizationState'],
-    type: OBSERVABILITY_SAVED_OBJECT,
+    type: VISUALIZATION_SAVED_OBJECT,
     getIconForSavedObject: () => 'lensApp',
   };
-  private attributeService?: AttributeService<ObservabilitySavedObjectAttributes>;
+  private attributeService?: AttributeService<VisualizationSavedObjectAttributes>;
 
   constructor(private getStartServices: () => Promise<StartServices>) {}
 
@@ -68,7 +68,7 @@ export class ObservabilityEmbeddableFactoryDefinition
     return 'Observability';
   }
 
-  private async saveMethod(attributes: ObservabilitySavedObjectAttributes, savedObjectId?: string) {
+  private async saveMethod(attributes: VisualizationSavedObjectAttributes, savedObjectId?: string) {
     const { savedObjectsClient } = await this.getStartServices();
     if (savedObjectId) {
       return savedObjectsClient.update(this.type, savedObjectId, attributes);
@@ -76,10 +76,10 @@ export class ObservabilityEmbeddableFactoryDefinition
     return savedObjectsClient.create(this.type, attributes);
   }
 
-  private async unwrapMethod(savedObjectId: string): Promise<ObservabilitySavedObjectAttributes> {
+  private async unwrapMethod(savedObjectId: string): Promise<VisualizationSavedObjectAttributes> {
     const { savedObjectsClient } = await this.getStartServices();
-    const savedObject: SimpleSavedObject<ObservabilitySavedObjectAttributes> = await savedObjectsClient.get<
-      ObservabilitySavedObjectAttributes
+    const savedObject: SimpleSavedObject<VisualizationSavedObjectAttributes> = await savedObjectsClient.get<
+      VisualizationSavedObjectAttributes
     >(this.type, savedObjectId);
     console.log('❗savedObjectId:', savedObjectId);
     console.log('❗savedObject:', savedObject);
@@ -109,7 +109,7 @@ export class ObservabilityEmbeddableFactoryDefinition
   private async getAttributeService() {
     if (!this.attributeService) {
       this.attributeService = (await this.getStartServices()).getAttributeService<
-        ObservabilitySavedObjectAttributes
+        VisualizationSavedObjectAttributes
       >(this.type, {
         saveMethod: this.saveMethod.bind(this),
         unwrapMethod: this.unwrapMethod.bind(this),

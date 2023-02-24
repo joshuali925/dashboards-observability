@@ -12,8 +12,8 @@ import {
 } from '../common/constants/shared';
 import { QueryManager } from '../common/query_manager';
 import {
-  ObservabilitySavedObjectAttributes,
-  OBSERVABILITY_SAVED_OBJECT,
+  VisualizationSavedObjectAttributes,
+  VISUALIZATION_SAVED_OBJECT,
 } from '../common/types/observability_saved_object_attributes';
 import { setPPLService, uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
@@ -170,8 +170,8 @@ export class ObservabilityPlugin
   }
 
   public start(core: CoreStart): ObservabilityStart {
-    core.savedObjects.client.create<ObservabilitySavedObjectAttributes>(
-      OBSERVABILITY_SAVED_OBJECT,
+    /* core.savedObjects.client.create<VisualizationSavedObjectAttributes>(
+      VISUALIZATION_SAVED_OBJECT,
       {
         title: '[Logs] Daily count for error response codes',
         description: 'custome desc',
@@ -201,7 +201,7 @@ export class ObservabilityPlugin
         id: 'observability-sample-embeddable',
         overwrite: true,
       }
-    );
+    ); */
     return {};
   }
   public stop() {}

@@ -274,12 +274,16 @@ const EventAnalyticsHome = (props: IHomeProps) => {
             }),
           });
 
+          // wait for flush
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
           const res = await savedObjects.fetchSavedObjects({
-            objectIdList: [...resp?.savedVizIds, ...resp?.savedQueryIds] || [],
+            // objectIdList: [...resp?.savedVizIds, ...resp?.savedQueryIds] || [],
             objectType: ['savedQuery', 'savedVisualization'],
             sortOrder: 'desc',
             fromIndex: 0,
           });
+          console.log('❗home res:', res);
           setSavedHistories((staleHistoryList) => {
             return [...res.observabilityObjectList, ...staleHistoryList];
           });
