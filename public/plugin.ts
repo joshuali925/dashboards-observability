@@ -19,6 +19,7 @@ import { setPPLService, uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
 import { Traces } from './core_visualize/traces';
+import { createEditObservabilityVisualizationAction } from './embeddable/edit_visualization_action';
 import { OBSERVABILITY_EMBEDDABLE } from './embeddable/observability_embeddable';
 import { ObservabilityEmbeddableFactoryDefinition } from './embeddable/observability_embeddable_factory';
 import './index.scss';
@@ -95,13 +96,9 @@ export class ObservabilityPlugin
     }));
     setupDeps.embeddable.registerEmbeddableFactory(OBSERVABILITY_EMBEDDABLE, embeddableFactory);
 
-    /* const editBookAction = createEditBookAction(async () => ({
-      getAttributeService: (await core.getStartServices())[1].dashboard.getAttributeService,
-      openModal: (await core.getStartServices())[0].overlays.openModal,
-      savedObjectsClient: (await core.getStartServices())[0].savedObjects.client,
-    }));
-    setupDeps.uiActions.registerAction(editBookAction);
-    setupDeps.uiActions.attachAction('CONTEXT_MENU_TRIGGER', editBookAction.id); */
+    const editVisualizationAction = createEditObservabilityVisualizationAction();
+    setupDeps.uiActions.registerAction(editVisualizationAction);
+    setupDeps.uiActions.attachAction('CONTEXT_MENU_TRIGGER', editVisualizationAction.id);
 
     // Return methods that should be available to other plugins
     return {};
