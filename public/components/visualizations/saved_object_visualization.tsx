@@ -27,7 +27,8 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
   useEffect(() => {
     const pplService = getPPLService();
     const metaData = { ...props.savedVisualization, query: props.savedVisualization.query };
-    const dataConfig = { ...(metaData.user_configs?.dataConfig || {}) };
+    const userConfigs = JSON.parse(metaData.user_configs)
+    const dataConfig = { ...(userConfigs.dataConfig || {}) };
     const hasBreakdowns = !_.isEmpty(dataConfig.breakdowns);
     const realTimeParsedStats = {
       ...getDefaultVisConfig(new QueryManager().queryParser().parse(metaData.query).getStats()),
@@ -51,13 +52,13 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
 
     const mixedUserConfigs = {
       availabilityConfig: {
-        ...(metaData.user_configs?.availabilityConfig || {}),
+        ...(userConfigs.availabilityConfig || {}),
       },
       dataConfig: {
         ...finalDataConfig,
       },
       layoutConfig: {
-        ...(metaData.user_configs?.layoutConfig || {}),
+        ...(userConfigs.layoutConfig || {}),
       },
     };
 
@@ -77,7 +78,7 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
     pplService
       .fetch({ query, format: 'viz' })
       .then((data) => {
-        const p = getVizContainerProps({
+        const container = getVizContainerProps({
           vizId: props.savedVisualization.type,
           rawVizData: data,
           query: { rawQuery: metaData.query },
@@ -85,7 +86,7 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
           userConfigs: mixedUserConfigs,
           explorer: { explorerData: data, explorerFields: data.metadata.fields },
         });
-        setVisContainerProps(p);
+        setVisContainerProps(container);
       })
       .catch((error: Error) => {
         console.error(error);
