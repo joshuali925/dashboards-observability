@@ -13,10 +13,4 @@ export interface VisualizationSavedObjectAttributes extends SavedObjectAttribute
   description?: string;
   version: number;
   savedVisualization?: SavedVisualization;
-  /* visualizationState?: string;
-  updated_at?: string;
-  styleState?: string;
-  searchSourceFields?: {
-    index?: string;
-  }; */
 }

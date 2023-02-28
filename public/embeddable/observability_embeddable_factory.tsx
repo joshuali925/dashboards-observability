@@ -81,8 +81,6 @@ export class ObservabilityEmbeddableFactoryDefinition
     const savedObject: SimpleSavedObject<VisualizationSavedObjectAttributes> = await savedObjectsClient.get<
       VisualizationSavedObjectAttributes
     >(this.type, savedObjectId);
-    console.log('❗savedObjectId:', savedObjectId);
-    console.log('❗savedObject:', savedObject);
     return { ...savedObject.attributes };
   }
 
