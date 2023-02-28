@@ -131,7 +131,7 @@ export default class SavedObjects {
         VISUALIZATION_SAVED_OBJECT,
         params.objectId
       );
-      console.log('❗list:', o);
+      console.log('❗o:', o);
       return {
         observabilityObjectList: [
           {

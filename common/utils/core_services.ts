@@ -6,6 +6,7 @@
 import { IUiSettingsClient, NotificationsStart, ToastInput } from '../../../../src/core/public';
 import { createGetterSetter } from '../../../../src/plugins/opensearch_dashboards_utils/common';
 import PPLService from '../../public/services/requests/ppl';
+import { QueryManager } from '../query_manager';
 
 let uiSettings: IUiSettingsClient;
 let notifications: NotificationsStart;
@@ -27,3 +28,4 @@ export const uiSettingsService = {
 };
 
 export const [getPPLService, setPPLService] = createGetterSetter<PPLService>('PPLService');
+export const [getQueryManager, setQueryManager] = createGetterSetter<QueryManager>('QueryManager');

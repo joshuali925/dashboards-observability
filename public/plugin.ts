@@ -43,6 +43,7 @@ export class ObservabilityPlugin
   ): ObservabilitySetup {
     uiSettingsService.init(core.uiSettings, core.notifications);
     const pplService = new PPLService(core.http);
+    const qm = new QueryManager();
     setPPLService(pplService);
 
     // redirect legacy notebooks URL to current URL under observability
@@ -70,7 +71,6 @@ export class ObservabilityPlugin
         const dslService = new DSLService(coreStart.http);
         const savedObjects = new SavedObjects(coreStart.http, coreStart.savedObjects.client);
         const timestampUtils = new TimestampUtils(dslService, pplService);
-        const qm = new QueryManager();
         return Observability(
           coreStart,
           depsStart,
@@ -94,6 +94,14 @@ export class ObservabilityPlugin
       overlays: (await core.getStartServices())[0].overlays,
     }));
     setupDeps.embeddable.registerEmbeddableFactory(OBSERVABILITY_EMBEDDABLE, embeddableFactory);
+
+    /* const editBookAction = createEditBookAction(async () => ({
+      getAttributeService: (await core.getStartServices())[1].dashboard.getAttributeService,
+      openModal: (await core.getStartServices())[0].overlays.openModal,
+      savedObjectsClient: (await core.getStartServices())[0].savedObjects.client,
+    }));
+    setupDeps.uiActions.registerAction(editBookAction);
+    setupDeps.uiActions.attachAction('CONTEXT_MENU_TRIGGER', editBookAction.id); */
 
     // Return methods that should be available to other plugins
     return {};

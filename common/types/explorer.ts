@@ -160,6 +160,8 @@ export interface SavedVisualization extends SavedObjectAttributes {
   selected_fields: { text: string; tokens: [] };
   selected_timestamp: IField;
   type: string;
+  sub_type: 'metric' | 'visualization';
+  user_configs: string;
   application_id?: string;
 }
 
