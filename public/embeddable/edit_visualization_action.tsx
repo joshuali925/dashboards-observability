@@ -35,6 +35,8 @@ export const createEditObservabilityVisualizationAction = () =>
       );
     },
     execute: async ({ embeddable }: ActionContext) => {
-      window.location.assign(`/app/${observabilityID}#/event_analytics/explorer/${embeddable.id}`);
+      window.location.assign(
+        `/app/${observabilityID}#/event_analytics/explorer/${embeddable.savedObjectId}`
+      );
     },
   });

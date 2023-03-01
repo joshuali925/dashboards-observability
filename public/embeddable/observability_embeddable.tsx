@@ -51,7 +51,7 @@ export class ObservabilityEmbeddable
   public readonly type = OBSERVABILITY_EMBEDDABLE;
   private subscription: Subscription;
   private node?: HTMLElement;
-  private savedObjectId?: string;
+  public savedObjectId?: string;
   private attributes?: VisualizationSavedObjectAttributes;
 
   constructor(
@@ -74,7 +74,7 @@ export class ObservabilityEmbeddable
       } else {
         this.updateOutput({
           attributes: this.attributes,
-          title: this.attributes.title,
+          title: this.input.title || this.attributes.title,
         });
       }
     });
@@ -112,7 +112,7 @@ export class ObservabilityEmbeddable
 
     this.updateOutput({
       attributes: this.attributes,
-      title: this.attributes.title,
+      title: this.input.title || this.attributes.title,
     });
   }
 }
