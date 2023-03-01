@@ -4,6 +4,7 @@
  */
 
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   EuiButton,
   EuiComboBox,
@@ -49,6 +50,7 @@ import { DataConfigItemClickPanel } from '../config_controls/data_config_item_cl
 import { DataConfigPanelFields } from '../config_controls/data_config_panel_fields';
 import { ButtonGroupItem } from './config_button_group';
 import { composeFinalQuery } from '../../../../../../../../common/utils';
+import { change as changeVizConfig } from '../../../../../redux/slices/viualization_config_slice';
 
 const initialDimensionEntry = {
   label: '',
@@ -70,6 +72,7 @@ export const DataConfigPanelItem = ({
   queryManager,
 }: DataConfigPanelProps) => {
   const { tabId, handleQueryChange, pplService } = useContext<any>(TabContext);
+  const dispatch = useDispatch();
   const requestParams = { tabId };
   const { getVisualizations, fillVisDataInStore } = useRenderVisualization({
     pplService,
@@ -276,29 +279,41 @@ export const DataConfigPanelItem = ({
   };
 
   const updateChart = useCallback(() => {
-    const [newQueryString, nextQueryState] = prepareNextVisState({
-      queryState: query,
-      visConfig: {
-        ...configList,
-      },
-    });
-    console.log('newQueryString: ', newQueryString);
-    handleQueryChange(newQueryString);
-    getVisualizations({
-      query: nextQueryState[FINAL_QUERY],
-      callback: (res) => {
-        updateVisUIState({
-          visData: res,
-          queryState: nextQueryState,
-          visConfMetadata: {
+    // const [newQueryString, nextQueryState] = prepareNextVisState({
+    //   queryState: query,
+    //   visConfig: {
+    //     ...configList,
+    //   },
+    // });
+    console.log('configList: ', configList);
+    dispatch(
+      changeVizConfig({
+        tabId: requestParams.tabId,
+        vizId: visualizations.vis?.name || '',
+        data: {
+          dataConfig: {
             ...configList,
           },
-          visMeta: {
-            visId: visualizations.vis?.name || '',
-          },
-        });
-      },
-    });
+        },
+      })
+    );
+    // console.log('newQueryString: ', newQueryString);
+    // handleQueryChange(newQueryString);
+    // getVisualizations({
+    //   query: nextQueryState[FINAL_QUERY],
+    //   callback: (res) => {
+    //     updateVisUIState({
+    //       visData: res,
+    //       queryState: nextQueryState,
+    //       visConfMetadata: {
+    //         ...configList,
+    //       },
+    //       visMeta: {
+    //         visId: visualizations.vis?.name || '',
+    //       },
+    //     });
+    //   },
+    // });
   }, [configList, query, visualizations]);
 
   const updateVisUIState = ({
@@ -351,7 +366,7 @@ export const DataConfigPanelItem = ({
             />
             <EuiPanel color="subdued" style={{ padding: '0px' }}>
               {/* Aggregation input for Series */}
-              {isAggregations && (
+              {/* {isAggregations && (
                 <EuiFormRow label="Aggregation">
                   <EuiComboBox
                     aria-label="aggregation input"
@@ -370,19 +385,19 @@ export const DataConfigPanelItem = ({
                     onChange={(e) => updateList(e.length > 0 ? e[0].label : '', 'aggregation')}
                   />
                 </EuiFormRow>
-              )}
+              )} */}
               {/* Show input fields for Series when aggregation is not empty  */}
               {isAggregations && selectedObj.aggregation !== '' && (
                 <>
-                  {getCommonDimensionsField(selectedObj, name)}
-                  <EuiFormRow label="Custom label">
+                  {getCommonDimensionsField(selectedObj, 'Aggregation')}
+                  {/* <EuiFormRow label="Custom label">
                     <EuiFieldText
                       placeholder="Custom label"
                       value={selectedObj[CUSTOM_LABEL]}
                       onChange={(e) => updateList(e.target.value, CUSTOM_LABEL)}
                       aria-label="input label"
                     />
-                  </EuiFormRow>
+                  </EuiFormRow> */}
                 </>
               )}
               {/* Show input fields for dimensions */}

@@ -68,7 +68,8 @@ export const preprocessJsonData = (
     });
     forEach(series, (sr) => {
       let tabularVizData = {};
-      const serieKey = sr[CUSTOM_LABEL] ? sr[CUSTOM_LABEL] : `${sr.aggregation}(${sr.name})`;
+      // const serieKey = sr[CUSTOM_LABEL] ? sr[CUSTOM_LABEL] : `${sr.aggregation}(${sr.name})`;
+      const serieKey = sr[CUSTOM_LABEL] ? sr[CUSTOM_LABEL] : sr['name'];
       if (!isEmpty(serieKey)) {
         const concatedXaxisLabel = [
           ...(!isEmpty(span) ? [getCompleteTimespanKey(span)] : []),
@@ -99,5 +100,6 @@ export const preprocessJsonData = (
       seriesFlattenedEntries.push(tabularVizData);
     });
   });
+  console.log('seriesFlattenedEntries: ', seriesFlattenedEntries);
   return seriesFlattenedEntries;
 };

@@ -33,8 +33,15 @@ export const Bar = ({ visualizations, layout, config }: any) => {
     data: {
       rawVizData: {
         data: queriedVizData,
-        jsonData,
-        metadata: { fields },
+        // jsonData,
+        // metadata: { fields },
+      },
+      explorer: {
+        explorerData: {
+          datarows,
+          jsonData,
+          schema
+        }
       },
       userConfigs: {
         dataConfig: {
@@ -67,7 +74,7 @@ export const Bar = ({ visualizations, layout, config }: any) => {
     },
   }: IVisualizationContainerProps = visualizations;
 
-  const lastIndex = fields.length - 1;
+  // const lastIndex = fields.length - 1;
 
   /**
    * determine stylings
@@ -95,8 +102,8 @@ export const Bar = ({ visualizations, layout, config }: any) => {
     PLOTLY_COLOR[index % PLOTLY_COLOR.length];
   // If chart has length of result buckets < 16
   // then use the LONG_CHART_COLOR for all the bars in the chart
-  const plotlyColorway =
-    queriedVizData[fields[lastIndex].name].length < 16 ? PLOTLY_COLOR : [LONG_CHART_COLOR];
+  // const plotlyColorway =
+  //   queriedVizData[fields[lastIndex].name].length < 16 ? PLOTLY_COLOR : [LONG_CHART_COLOR];
 
   const addStylesToTraces = (traces, traceStyles) => {
     const {
@@ -141,7 +148,7 @@ export const Bar = ({ visualizations, layout, config }: any) => {
       tooltipText,
       lineWidth,
     };
-
+    console.log('outer visConfig: ', visConfig);
     return addStylesToTraces(
       transformPreprocessedDataToTraces(preprocessJsonData(jsonData, visConfig), visConfig),
       { ...traceStyles }
@@ -150,7 +157,7 @@ export const Bar = ({ visualizations, layout, config }: any) => {
 
   const mergedLayout = useMemo(() => {
     return {
-      colorway: plotlyColorway,
+      // colorway: plotlyColorway,
       ...layout,
       title: panelOptions.title || layoutConfig.layout?.title || '',
       barmode: chartStyles.mode || visualizations.vis.mode,

@@ -30,9 +30,9 @@ export const Visualization = ({
     // Markdown, it does not depend on if there is data
     if (vis.id === VIS_CHART_TYPES.Text) return [true, ''];
 
-    if (isEmpty(queriedVizData)) return [false, VISUALIZATION_ERROR.NO_DATA];
+    // if (isEmpty(queriedVizData)) return [false, VISUALIZATION_ERROR.NO_DATA];
 
-    if (isEmpty(series)) return [false, VISUALIZATION_ERROR.INVALID_DATA]; // series is required to any visualization type
+    // if (isEmpty(series)) return [false, VISUALIZATION_ERROR.INVALID_DATA]; // series is required to any visualization type
 
     // bars, pie
     if (dimensions.length < 1 && isEmpty(span)) return [false, VISUALIZATION_ERROR.INVALID_DATA];
