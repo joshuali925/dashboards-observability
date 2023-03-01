@@ -11,10 +11,6 @@ import {
   observabilityTitle,
 } from '../common/constants/shared';
 import { QueryManager } from '../common/query_manager';
-import {
-  VisualizationSavedObjectAttributes,
-  VISUALIZATION_SAVED_OBJECT,
-} from '../common/types/observability_saved_object_attributes';
 import { setPPLService, uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
@@ -96,9 +92,14 @@ export class ObservabilityPlugin
     }));
     setupDeps.embeddable.registerEmbeddableFactory(OBSERVABILITY_EMBEDDABLE, embeddableFactory);
 
-    const editVisualizationAction = createEditObservabilityVisualizationAction();
-    setupDeps.uiActions.registerAction(editVisualizationAction);
-    setupDeps.uiActions.attachAction('CONTEXT_MENU_TRIGGER', editVisualizationAction.id);
+    (async () => {
+      const [coreStart] = await core.getStartServices();
+      const editVisualizationAction = createEditObservabilityVisualizationAction(
+        coreStart.application.navigateToUrl
+      );
+      setupDeps.uiActions.registerAction(editVisualizationAction);
+      setupDeps.uiActions.attachAction('CONTEXT_MENU_TRIGGER', editVisualizationAction.id);
+    })();
 
     // Return methods that should be available to other plugins
     return {};
