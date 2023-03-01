@@ -44,6 +44,10 @@ export interface ObservabilityOutput extends EmbeddableOutput {
   attributes?: VisualizationSavedObjectAttributes;
 }
 
+type ObservabilityEmbeddableConfig = Required<
+  Pick<EmbeddableOutput, 'editUrl' | 'editPath' | 'editApp'>
+>;
+
 export class ObservabilityEmbeddable
   extends Embeddable<SavedObjectEmbeddableInput, ObservabilityOutput>
   implements ReferenceOrValueEmbeddable<SavedObjectEmbeddableInput, SavedObjectEmbeddableInput>
@@ -55,6 +59,7 @@ export class ObservabilityEmbeddable
   private attributes?: VisualizationSavedObjectAttributes;
 
   constructor(
+    config: ObservabilityEmbeddableConfig,
     initialInput: SavedObjectEmbeddableInput,
     private attributeService: AttributeService<VisualizationSavedObjectAttributes>,
     {
@@ -63,7 +68,7 @@ export class ObservabilityEmbeddable
       parent?: IContainer;
     }
   ) {
-    super(initialInput, {} as ObservabilityOutput, parent);
+    super(initialInput, { editable: true, ...config }, parent);
 
     this.subscription = this.getInput$().subscribe(async () => {
       const savedObjectId = this.getInput().savedObjectId;
@@ -109,6 +114,8 @@ export class ObservabilityEmbeddable
 
   public async reload() {
     this.attributes = await this.attributeService.unwrapAttributes(this.input);
+    console.log('❗attributes:', this.attributes);
+    console.log('❗input:', this.input);
 
     this.updateOutput({
       attributes: this.attributes,

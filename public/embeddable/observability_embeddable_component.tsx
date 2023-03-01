@@ -4,12 +4,10 @@
  */
 
 import React from 'react';
-import { TimeRange } from '../../../../src/plugins/data/common';
 import {
   SavedObjectEmbeddableInput,
   withEmbeddableSubscription,
 } from '../../../../src/plugins/embeddable/public';
-import { SavedVisualization } from '../../common/types/explorer';
 import { SavedObjectVisualization } from '../components/visualizations/saved_object_visualization';
 import { ObservabilityEmbeddable, ObservabilityOutput } from './observability_embeddable';
 
@@ -19,15 +17,11 @@ interface ObservabilityEmbeddableComponentProps {
   embeddable: ObservabilityEmbeddable;
 }
 
-interface SavedObjectVisualizationProps {
-  savedVisualization: SavedVisualization;
-  timeRange?: TimeRange;
-}
-
 const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableComponentProps> = (
   props
 ) => {
   const visualization = props.output.attributes?.savedVisualization;
+  console.log('❗inner component props:', props);
   return visualization ? (
     <SavedObjectVisualization
       savedVisualization={visualization}

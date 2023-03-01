@@ -12,6 +12,7 @@ import { AttributeService, DashboardStart } from '../../../../src/plugins/dashbo
 import {
   EmbeddableFactoryDefinition,
   EmbeddableOutput,
+  ErrorEmbeddable,
   IContainer,
   SavedObjectEmbeddableInput,
 } from '../../../../src/plugins/embeddable/public';
@@ -20,6 +21,7 @@ import {
   OnSaveProps,
   SavedObjectMetaData,
 } from '../../../../src/plugins/saved_objects/public';
+import { observabilityID } from '../../common/constants/shared';
 import {
   VisualizationSavedObjectAttributes,
   VISUALIZATION_SAVED_OBJECT,
@@ -62,11 +64,25 @@ export class ObservabilityEmbeddableFactoryDefinition
     input: SavedObjectEmbeddableInput,
     parent?: IContainer
   ) {
-    return this.create(input, parent);
+    const editPath = `#/event_analytics/explorer/${savedObjectId}`;
+    const editUrl = `/app/${observabilityID}${editPath}`;
+    return new ObservabilityEmbeddable(
+      {
+        editUrl,
+        editPath,
+        editApp: observabilityID,
+      },
+      input,
+      await this.getAttributeService(),
+      { parent }
+    );
   }
 
   async create(initialInput: SavedObjectEmbeddableInput, parent?: IContainer) {
-    return new ObservabilityEmbeddable(initialInput, await this.getAttributeService(), { parent });
+    return new ErrorEmbeddable(
+      'Saved searches can only be created from a saved object',
+      initialInput
+    );
   }
 
   async isEditable() {
