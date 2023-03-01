@@ -5,6 +5,7 @@
 
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { SizeMe } from 'react-sizeme';
 import { TimeRange } from '../../../../../src/plugins/data/common';
 import { QueryManager } from '../../../common/query_manager';
 import { IVisualizationContainerProps, SavedVisualization } from '../../../common/types/explorer';
@@ -27,7 +28,7 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
   useEffect(() => {
     const pplService = getPPLService();
     const metaData = { ...props.savedVisualization, query: props.savedVisualization.query };
-    const userConfigs = JSON.parse(metaData.user_configs)
+    const userConfigs = JSON.parse(metaData.user_configs);
     const dataConfig = { ...(userConfigs.dataConfig || {}) };
     const hasBreakdowns = !_.isEmpty(dataConfig.breakdowns);
     const realTimeParsedStats = {
@@ -78,6 +79,7 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
     pplService
       .fetch({ query, format: 'viz' })
       .then((data) => {
+        console.log('❗data:', data);
         const container = getVizContainerProps({
           vizId: props.savedVisualization.type,
           rawVizData: data,
@@ -93,5 +95,7 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
       });
   }, [props]);
 
-  return visContainerProps ? <Visualization visualizations={visContainerProps} /> : null;
+  return visContainerProps ? (
+    <SizeMe>{({ size }) => <Visualization visualizations={visContainerProps} />}</SizeMe>
+  ) : null;
 };

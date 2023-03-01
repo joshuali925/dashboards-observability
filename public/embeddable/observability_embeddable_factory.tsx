@@ -1,16 +1,25 @@
-import { OverlayStart, SavedObjectsClientContract, SimpleSavedObject } from '../../../../src/core/public';
-import { AttributeService, DashboardStart } from '../../../../src/plugins/dashboard/public';
 /*
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
+
+import {
+  OverlayStart,
+  SavedObjectsClientContract,
+  SimpleSavedObject,
+} from '../../../../src/core/public';
+import { AttributeService, DashboardStart } from '../../../../src/plugins/dashboard/public';
 import {
   EmbeddableFactoryDefinition,
   EmbeddableOutput,
   IContainer,
   SavedObjectEmbeddableInput,
 } from '../../../../src/plugins/embeddable/public';
-import { checkForDuplicateTitle, OnSaveProps } from '../../../../src/plugins/saved_objects/public';
+import {
+  checkForDuplicateTitle,
+  OnSaveProps,
+  SavedObjectMetaData,
+} from '../../../../src/plugins/saved_objects/public';
 import {
   VisualizationSavedObjectAttributes,
   VISUALIZATION_SAVED_OBJECT,
@@ -38,10 +47,10 @@ export class ObservabilityEmbeddableFactoryDefinition
     >
 {
   public readonly type = OBSERVABILITY_EMBEDDABLE;
-  public readonly savedObjectMetaData = {
+  public readonly savedObjectMetaData: SavedObjectMetaData<VisualizationSavedObjectAttributes> = {
     name: 'SQL/PPL Visualizations',
-    includeFields: ['visualizationState'],
-    type: VISUALIZATION_SAVED_OBJECT,
+    includeFields: [],
+    type: VISUALIZATION_SAVED_OBJECT, // saved object type for finding embeddables in Dashboard
     getIconForSavedObject: () => 'lensApp',
   };
   private attributeService?: AttributeService<VisualizationSavedObjectAttributes>;
@@ -57,7 +66,7 @@ export class ObservabilityEmbeddableFactoryDefinition
   }
 
   async create(initialInput: SavedObjectEmbeddableInput, parent?: IContainer) {
-    return new ObservabilityEmbeddable(initialInput, await this.getAttributeService(),{ parent });
+    return new ObservabilityEmbeddable(initialInput, await this.getAttributeService(), { parent });
   }
 
   async isEditable() {
@@ -78,9 +87,9 @@ export class ObservabilityEmbeddableFactoryDefinition
 
   private async unwrapMethod(savedObjectId: string): Promise<VisualizationSavedObjectAttributes> {
     const { savedObjectsClient } = await this.getStartServices();
-    const savedObject: SimpleSavedObject<VisualizationSavedObjectAttributes> = await savedObjectsClient.get<
-      VisualizationSavedObjectAttributes
-    >(this.type, savedObjectId);
+    const savedObject: SimpleSavedObject<VisualizationSavedObjectAttributes> =
+      await savedObjectsClient.get<VisualizationSavedObjectAttributes>(this.type, savedObjectId);
+    console.log('❗savedObject:', savedObject);
     return { ...savedObject.attributes };
   }
 
@@ -106,9 +115,9 @@ export class ObservabilityEmbeddableFactoryDefinition
 
   private async getAttributeService() {
     if (!this.attributeService) {
-      this.attributeService = (await this.getStartServices()).getAttributeService<
-        VisualizationSavedObjectAttributes
-      >(this.type, {
+      this.attributeService = (
+        await this.getStartServices()
+      ).getAttributeService<VisualizationSavedObjectAttributes>(this.type, {
         saveMethod: this.saveMethod.bind(this),
         unwrapMethod: this.unwrapMethod.bind(this),
         checkForDuplicateTitle: this.checkForDuplicateTitleMethod.bind(this),
