@@ -283,7 +283,6 @@ const EventAnalyticsHome = (props: IHomeProps) => {
             sortOrder: 'desc',
             fromIndex: 0,
           });
-          console.log('❗home res:', res);
           setSavedHistories((staleHistoryList) => {
             return [...res.observabilityObjectList, ...staleHistoryList];
           });

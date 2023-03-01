@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ILegacyClusterClient, ScopeableRequest } from '../../../../../src/core/server';
 import {
   sampleQueries,
   sampleVisualizations,
@@ -10,11 +11,11 @@ import {
 
 // eslint-disable-next-line import/no-default-export
 export default class SavedObjectFacet {
-  constructor(private client: any) {
+  constructor(private client: ILegacyClusterClient) {
     this.client = client;
   }
 
-  fetch = async (request: any, params: any, format: string) => {
+  fetch = async (request: ScopeableRequest, params: Record<string, any>, format: string) => {
     const res = {
       success: false,
       data: {},
@@ -196,7 +197,7 @@ export default class SavedObjectFacet {
     return this.fetch(
       request,
       {
-        ...params
+        ...params,
       },
       'observability.getObject'
     );

@@ -79,7 +79,6 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
     pplService
       .fetch({ query, format: 'viz' })
       .then((data) => {
-        console.log('❗data:', data);
         const container = getVizContainerProps({
           vizId: props.savedVisualization.type,
           rawVizData: data,

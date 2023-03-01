@@ -125,13 +125,11 @@ export default class SavedObjects {
   }
 
   async fetchSavedObjects(params: ISavedObjectRequestParams) {
-    console.log('❗params:', params);
     if (params.objectId) {
       const o = await this.savedObjectsClient.get<VisualizationSavedObjectAttributes>(
         VISUALIZATION_SAVED_OBJECT,
         params.objectId
       );
-      console.log('❗o:', o);
       return {
         observabilityObjectList: [
           {
@@ -160,14 +158,12 @@ export default class SavedObjects {
           lastUpdatedTimeMs: o.updated_at,
         }))
       );
-    console.log('❗list:', list);
 
     const res = await this.http.get(`${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}`, {
       query: {
         ...params,
       },
     });
-    console.log('❗res:', res);
     return { observabilityObjectList: list };
   }
 
@@ -222,7 +218,6 @@ export default class SavedObjects {
         savedVisualization: finalParams.object,
       }
     );
-    console.log('❗res:', res);
     return { objectId: res.id };
 
     /* return await this.http.put(
@@ -268,7 +263,6 @@ export default class SavedObjects {
         body: JSON.stringify(finalParams),
       }
     );
-    console.log('❗res:', res);
     return res;
   }
 
