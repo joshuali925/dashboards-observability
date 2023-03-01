@@ -356,14 +356,19 @@ export const Explorer = ({
 
   const fetchData = async (startingTime?: string, endingTime?: string) => {
     const curQuery = queryRef.current;
-
-    // sql spark
-    if (curQuery![RAW_QUERY].match(/spark/g)) {
-      if (tabId === TYPE_TAB_MAPPING[SAVED_QUERY]) {
-        return getEvents(curQuery![RAW_QUERY]);
-      } else {
-        return getVisualizations();
-      }
+    const finalSQLQuery = `source = myspark.jdbc("${curQuery![RAW_QUERY]}")`
+    await dispatch(
+      changeQuery({
+        tabId,
+        query: {
+          finalQuery: finalSQLQuery,
+        },
+      })
+    );
+    if (isEqual(selectedContentTabId, TAB_EVENT_ID)) {
+      return getEvents(finalSQLQuery);
+    } else {
+      return getVisualizations(finalSQLQuery);
     }
 
     const rawQueryStr = (curQuery![RAW_QUERY] as string).includes(appBaseQuery)

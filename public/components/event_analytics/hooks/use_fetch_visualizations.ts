@@ -81,12 +81,12 @@ export const useFetchVisualizations = ({
     );
   };
 
-  const getVisualizations = () => {
-    const cur = queriesRef.current;
-    const rawQuery = cur![requestParams.tabId][RAW_QUERY];
+  const getVisualizations = (query: string) => {
+    // const cur = queriesRef.current;
+    // const rawQuery = cur![requestParams.tabId][RAW_QUERY];
     fetchVisualizations(
       {
-        query: rawQuery,
+        query: query,
       },
       'viz',
       (res: any) => {
