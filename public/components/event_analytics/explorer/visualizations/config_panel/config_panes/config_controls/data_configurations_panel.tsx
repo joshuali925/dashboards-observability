@@ -334,12 +334,12 @@ export const DataConfigPanelItem = ({
     filter(options, (i: IField) => i.type !== TIMESTAMP);
 
   const getOptionsAvailable = (sectionName: string) => {
-    if (
-      (visualizations.vis.name === VIS_CHART_TYPES.Line ||
-        visualizations.vis.name === VIS_CHART_TYPES.Scatter) &&
-      isEqual(sectionName, GROUPBY)
-    )
-      return filter(fieldOptionList, (i) => i.type === TIMESTAMP);
+    // if (
+    //   (visualizations.vis.name === VIS_CHART_TYPES.Line ||
+    //     visualizations.vis.name === VIS_CHART_TYPES.Scatter) &&
+    //   isEqual(sectionName, GROUPBY)
+    // )
+    //   return filter(fieldOptionList, (i) => i.type === TIMESTAMP);
 
     if (
       sectionName === AGGREGATIONS ||

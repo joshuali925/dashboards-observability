@@ -38,8 +38,15 @@ export const Line = ({ visualizations, layout, config }: any) => {
     data: {
       rawVizData: {
         data: queriedVizData,
-        jsonData,
-        metadata: { fields },
+        // jsonData,
+        // metadata: { fields },
+      },
+      explorer: {
+        explorerData: {
+          datarows,
+          jsonData,
+          schema
+        }
       },
       userConfigs: {
         dataConfig: {
