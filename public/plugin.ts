@@ -85,7 +85,6 @@ export class ObservabilityPlugin
 
     const embeddableFactory = new ObservabilityEmbeddableFactoryDefinition(async () => ({
       getAttributeService: (await core.getStartServices())[1].dashboard.getAttributeService,
-      openModal: (await core.getStartServices())[0].overlays.openModal,
       savedObjectsClient: (await core.getStartServices())[0].savedObjects.client,
       overlays: (await core.getStartServices())[0].overlays,
     }));
