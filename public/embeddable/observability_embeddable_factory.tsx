@@ -34,7 +34,6 @@ import {
 
 interface StartServices {
   getAttributeService: DashboardStart['getAttributeService'];
-  openModal: OverlayStart['openModal'];
   savedObjectsClient: SavedObjectsClientContract;
   overlays: OverlayStart;
 }

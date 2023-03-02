@@ -50,7 +50,6 @@ type ObservabilityEmbeddableConfig = Required<
 
 export class ObservabilityEmbeddable
   extends Embeddable<SavedObjectEmbeddableInput, ObservabilityOutput>
-  implements ReferenceOrValueEmbeddable<SavedObjectEmbeddableInput, SavedObjectEmbeddableInput>
 {
   public readonly type = OBSERVABILITY_EMBEDDABLE;
   private subscription: Subscription;
@@ -85,25 +84,6 @@ export class ObservabilityEmbeddable
     });
   }
 
-  readonly inputIsRefType = (
-    input: SavedObjectEmbeddableInput
-  ): input is SavedObjectEmbeddableInput => {
-    return this.attributeService.inputIsRefType(input);
-  };
-
-  readonly getInputAsValueType = async (): Promise<SavedObjectEmbeddableInput> => {
-    const input = this.attributeService.getExplicitInputFromEmbeddable(this);
-    return this.attributeService.getInputAsValueType(input);
-  };
-
-  readonly getInputAsRefType = async (): Promise<SavedObjectEmbeddableInput> => {
-    const input = this.attributeService.getExplicitInputFromEmbeddable(this);
-    return this.attributeService.getInputAsRefType(input, {
-      showSaveModal: true,
-      saveModalTitle: this.getTitle(),
-    });
-  };
-
   public render(node: HTMLElement) {
     if (this.node) {
       ReactDOM.unmountComponentAtNode(this.node);
@@ -121,5 +101,13 @@ export class ObservabilityEmbeddable
       attributes: this.attributes,
       title: this.input.title || this.attributes.title,
     });
+  }
+
+  public destroy() {
+    super.destroy();
+    this.subscription.unsubscribe();
+    if (this.node) {
+      ReactDOM.unmountComponentAtNode(this.node);
+    }
   }
 }
