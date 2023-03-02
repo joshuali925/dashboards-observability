@@ -456,17 +456,18 @@ export const displayVisualization = (metaData: any, data: any, type: string) => 
       ...(metaData.user_configs?.layoutConfig || {}),
     },
   };
+  const p = getVizContainerProps({
+    vizId: type,
+    rawVizData: data,
+    query: { rawQuery: metaData.query },
+    indexFields: {},
+    userConfigs: mixedUserConfigs,
+    explorer: { explorerData: data, explorerFields: data.metadata.fields },
+  })
 
   return (
     <Visualization
-      visualizations={getVizContainerProps({
-        vizId: type,
-        rawVizData: data,
-        query: { rawQuery: metaData.query },
-        indexFields: {},
-        userConfigs: mixedUserConfigs,
-        explorer: { explorerData: data, explorerFields: data.metadata.fields },
-      })}
+      visualizations={p}
     />
   );
 };
