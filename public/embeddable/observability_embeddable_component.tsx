@@ -9,6 +9,7 @@ import {
   withEmbeddableSubscription,
 } from '../../../../src/plugins/embeddable/public';
 import { SavedObjectVisualization } from '../components/visualizations/saved_object_visualization';
+import { parseFilters } from './filters/filter_parser';
 import { ObservabilityEmbeddable, ObservabilityOutput } from './observability_embeddable';
 
 interface ObservabilityEmbeddableComponentProps {
@@ -21,12 +22,13 @@ const ObservabilityEmbeddableComponentInner: React.FC<ObservabilityEmbeddableCom
   props
 ) => {
   const visualization = props.output.attributes?.savedVisualization;
-  console.log('❗inner component props:', props);
-  console.log('❗inner component filters:', props.input.filters);
   return visualization ? (
     <SavedObjectVisualization
       savedVisualization={visualization}
       timeRange={props.input.timeRange}
+      filters={props.input.filters}
+      query={props.input.query}
+      whereClause={parseFilters(props.input.filters)}
     />
   ) : null;
 };
