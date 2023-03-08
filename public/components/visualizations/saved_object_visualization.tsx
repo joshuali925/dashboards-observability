@@ -6,10 +6,10 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { SizeMe } from 'react-sizeme';
-import { TimeRange } from '../../../../../src/plugins/data/common';
+import { Filter, Query, TimeRange } from '../../../../../src/plugins/data/common';
 import { QueryManager } from '../../../common/query_manager';
 import { IVisualizationContainerProps, SavedVisualization } from '../../../common/types/explorer';
-import { composeFinalQuery, getPPLService, removeBacktick } from '../../../common/utils';
+import { getPPLService, preprocessQuery, removeBacktick } from '../../../common/utils';
 import { getDefaultVisConfig } from '../event_analytics/utils';
 import { getVizContainerProps } from './charts/helpers';
 import { Visualization } from './visualization';
@@ -17,12 +17,16 @@ import { Visualization } from './visualization';
 interface SavedObjectVisualizationProps {
   savedVisualization: SavedVisualization;
   timeRange?: TimeRange;
+  filters?: Filter[];
+  query?: Query;
+  whereClause?: string;
 }
 
 /**
  * Renders a visualization from a {@link SavedVisualization}.
  */
 export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> = (props) => {
+  console.log('❗props:', props);
   const [visContainerProps, setVisContainerProps] = useState<IVisualizationContainerProps>();
 
   useEffect(() => {
@@ -66,14 +70,15 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
     let query = metaData.query;
 
     if (props.timeRange) {
-      query = composeFinalQuery(
-        metaData.query,
-        props.timeRange.from,
-        props.timeRange.to,
-        props.savedVisualization.selected_timestamp.name,
-        false,
-        ''
-      );
+      query = preprocessQuery({
+        rawQuery: metaData.query,
+        startTime: props.timeRange.from,
+        endTime: props.timeRange.to,
+        timeField: props.savedVisualization.selected_timestamp.name,
+        isLiveQuery: false,
+        whereClause: props.whereClause,
+      });
+      console.log('❗query:', query);
     }
 
     pplService
