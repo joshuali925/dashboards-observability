@@ -95,7 +95,7 @@ export class Main extends React.Component<MainProps, MainState> {
   createNotebook = (newNoteName: string) => {
     if (newNoteName.length >= 50 || newNoteName.length === 0) {
       this.setToast('Invalid notebook name', 'danger');
-      window.location.assign('#/notebooks');
+      window.location.assign('#/investigations');
       return;
     }
     const newNoteObject = {
@@ -108,7 +108,7 @@ export class Main extends React.Component<MainProps, MainState> {
       })
       .then(async (res) => {
         this.setToast(`Notebook "${newNoteName}" successfully created!`);
-        window.location.assign(`#/notebooks/${res}`);
+        window.location.assign(`#/investigations/${res}`);
       })
       .catch((err) => {
         this.setToast(
@@ -310,7 +310,7 @@ export class Main extends React.Component<MainProps, MainState> {
           <Switch>
             <Route
               exact
-              path={['/notebooks/create', '/notebooks']}
+              path={['/investigations/create', '/investigations']}
               render={(props) => (
                 <ObservabilitySideBar>
                   <NoteTable
@@ -331,7 +331,7 @@ export class Main extends React.Component<MainProps, MainState> {
             />
             <Route
               exact
-              path="/notebooks/:id"
+              path="/investigations/:id"
               render={(props) => (
                 <Notebook
                   pplService={this.props.pplService}

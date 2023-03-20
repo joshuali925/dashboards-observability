@@ -74,7 +74,7 @@ export function NoteTable(props: NoteTableProps) {
       props.parentBreadcrumb,
       {
         text: 'Notebooks',
-        href: '#/notebooks',
+        href: '#/investigations',
       },
     ]);
     props.fetchNotebooks();
@@ -319,7 +319,7 @@ export function NoteTable(props: NoteTableProps) {
                     </EuiPopover>
                   </EuiFlexItem>
                   <EuiFlexItem>
-                    <EuiButton fill href="#/notebooks/create">
+                    <EuiButton fill href="#/investigations/create">
                       Create notebook
                     </EuiButton>
                   </EuiFlexItem>
@@ -380,7 +380,7 @@ export function NoteTable(props: NoteTableProps) {
                 <EuiSpacer size="m" />
                 <EuiFlexGroup justifyContent="center">
                   <EuiFlexItem grow={false}>
-                    <EuiButton href="#/notebooks/create"
+                    <EuiButton href="#/investigations/create"
                       data-test-subj="note-table-empty-state-create-notebook-button"
                       fullWidth={false}
                     >
