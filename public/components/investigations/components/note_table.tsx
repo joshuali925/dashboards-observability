@@ -253,7 +253,7 @@ export function NoteTable(props: NoteTableProps) {
       sortable: true,
       truncateText: true,
       render: (value, record) => (
-        <EuiLink href={`#/notebooks/${record.id}`}>{_.truncate(value, { length: 100 })}</EuiLink>
+        <EuiLink href={`#/investigations/${record.id}`}>{_.truncate(value, { length: 100 })}</EuiLink>
       ),
     },
     {
