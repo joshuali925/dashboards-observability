@@ -679,19 +679,19 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
   }
 
   componentDidMount() {
-    this.setBreadcrumbs('');
-    this.loadNotebook();
-    this.checkIfReportingPluginIsInstalled();
-    const searchParams = queryString.parse(this.props.location.search);
-    const view = searchParams['view'];
-    if (!view) {
-      this.configureViewParameter('view_both');
-    }
-    if (view === 'output_only') {
-      this.setState({ selectedViewId: 'output_only' });
-    } else if (view === 'input_only') {
-      this.setState({ selectedViewId: 'input_only' });
-    }
+    // this.setBreadcrumbs('');
+    // this.loadNotebook();
+    // this.checkIfReportingPluginIsInstalled();
+    // const searchParams = queryString.parse(this.props.location.search);
+    // const view = searchParams['view'];
+    // if (!view) {
+    //   this.configureViewParameter('view_both');
+    // }
+    // if (view === 'output_only') {
+    //   this.setState({ selectedViewId: 'output_only' });
+    // } else if (view === 'input_only') {
+    //   this.setState({ selectedViewId: 'input_only' });
+    // }
   }
 
   render() {
@@ -923,7 +923,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
 
     return (
       <div style={pageStyles}>
-        <EuiPage>
+        <EuiPage className="investigations-glass">
           <EuiPageBody component="div">
             <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">
               <EuiFlexItem />

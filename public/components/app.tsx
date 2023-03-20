@@ -16,9 +16,10 @@ import { Home as ApplicationAnalyticsHome } from './application_analytics/home';
 import { MetricsListener } from './common/metrics_listener';
 import { Home as CustomPanelsHome } from './custom_panels/home';
 import { EventAnalytics } from './event_analytics';
+import { InvestigationFlyout } from './investigations/components/investigation_flyout';
+import { Main as InvestigationsHome } from './investigations/components/main';
 import { Home as MetricsHome } from './metrics/index';
 import { Main as NotebooksHome } from './notebooks/components/main';
-import { Main as InvestigationsHome } from './investigations/components/main';
 import { Home as TraceAnalyticsHome } from './trace_analytics/home';
 
 interface ObservabilityAppDeps {
@@ -179,6 +180,17 @@ export const App = ({
                 }}
               />
             </Switch>
+            <InvestigationFlyout
+              DashboardContainerByValueRenderer={
+                DepsStart.dashboard.DashboardContainerByValueRenderer
+              }
+              http={http}
+              pplService={pplService}
+              setBreadcrumbs={chrome.setBreadcrumbs}
+              parentBreadcrumb={parentBreadcrumb}
+              notifications={notifications}
+              openedNoteId="QO14AIcBy8NPHsZTgmMq"
+            />
           </MetricsListener>
         </I18nProvider>
       </HashRouter>
