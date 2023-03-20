@@ -18,6 +18,7 @@ import { Home as CustomPanelsHome } from './custom_panels/home';
 import { EventAnalytics } from './event_analytics';
 import { Home as MetricsHome } from './metrics/index';
 import { Main as NotebooksHome } from './notebooks/components/main';
+import { Main as InvestigationsHome } from './investigations/components/main';
 import { Home as TraceAnalyticsHome } from './trace_analytics/home';
 
 interface ObservabilityAppDeps {
@@ -103,6 +104,22 @@ export const App = ({
                 path="/notebooks"
                 render={(props) => (
                   <NotebooksHome
+                    {...props}
+                    DashboardContainerByValueRenderer={
+                      DepsStart.dashboard.DashboardContainerByValueRenderer
+                    }
+                    http={http}
+                    pplService={pplService}
+                    setBreadcrumbs={chrome.setBreadcrumbs}
+                    parentBreadcrumb={parentBreadcrumb}
+                    notifications={notifications}
+                  />
+                )}
+              />
+              <Route
+                path="/investigations"
+                render={(props) => (
+                  <InvestigationsHome
                     {...props}
                     DashboardContainerByValueRenderer={
                       DepsStart.dashboard.DashboardContainerByValueRenderer
