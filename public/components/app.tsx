@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { EuiButtonIcon } from '@elastic/eui';
 import { I18nProvider } from '@osd/i18n/react';
 import { QueryManager } from 'common/query_manager';
 import React from 'react';
@@ -189,7 +190,7 @@ export const App = ({
               setBreadcrumbs={chrome.setBreadcrumbs}
               parentBreadcrumb={parentBreadcrumb}
               notifications={notifications}
-              openedNoteId="QO14AIcBy8NPHsZTgmMq"
+              // openedNoteId="QO14AIcBy8NPHsZTgmMq"
             />
           </MetricsListener>
         </I18nProvider>

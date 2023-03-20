@@ -5,6 +5,7 @@
 /* eslint-disable no-console */
 
 import {
+  EuiButtonIcon,
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
@@ -14,7 +15,6 @@ import {
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { ReactChild } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import { ChromeBreadcrumb, CoreStart } from '../../../../../../src/core/public';
 import { DashboardStart } from '../../../../../../src/plugins/dashboard/public';
 import {
@@ -50,6 +50,7 @@ interface InvestigationFlyoutState {
   openedNotebook: NotebookType | undefined;
   toasts: Toast[];
   loading: boolean;
+  flyoutOpen: boolean;
 }
 
 export interface NotebookType {
@@ -303,7 +304,18 @@ export class InvestigationFlyout extends React.Component<
   };
 
   render() {
-    if (!this.props.openedNoteId) return '';
+    if (!this.state.flyoutOpen) {
+      return (
+        <EuiButtonIcon
+          iconType="faceHappy"
+          iconSize="l"
+          display="empty"
+          color="primary"
+          id="investigations-toggle-icon"
+          onClick={() => this.setState({ flyoutOpen: true })}
+        />
+      );
+    }
     return (
       <>
         <EuiGlobalToastList
@@ -315,14 +327,19 @@ export class InvestigationFlyout extends React.Component<
           }}
           toastLifeTimeMs={6000}
         />
-        <EuiFlyout ownFocus={false} onClose={() => {}} className="investigations-glass-wrapper">
+        <EuiFlyout
+          ownFocus={false}
+          onClose={() => {
+            this.setState({ flyoutOpen: false });
+          }}
+          className="investigations-glass-wrapper"
+        >
           <EuiFlyoutHeader hasBorder>
             <EuiTitle>
               <h2>Investigations</h2>
             </EuiTitle>
           </EuiFlyoutHeader>
           <EuiFlyoutBody>
-            <div>hi</div>
             <Notebook
               pplService={this.props.pplService}
               openedNoteId={this.props.openedNoteId}
