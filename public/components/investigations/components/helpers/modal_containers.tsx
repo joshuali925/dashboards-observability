@@ -63,7 +63,7 @@ export const getCloneModal = (
   return (
     <EuiOverlayMask>
       <EuiConfirmModal
-        title="Clone Notebook"
+        title="Clone Investigation"
         onCancel={onCancel}
         onConfirm={onConfirm}
         cancelButtonText="Cancel"
@@ -85,7 +85,7 @@ export const getSampleNotebooksModal = (
   return (
     <EuiOverlayMask>
       <EuiConfirmModal
-        title="Add sample notebooks"
+        title="Add sample investigations"
         onCancel={onCancel}
         onConfirm={onConfirm}
         cancelButtonText="Cancel"

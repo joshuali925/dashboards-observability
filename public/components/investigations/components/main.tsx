@@ -22,7 +22,7 @@ import { Notebook } from './notebook';
 import { NoteTable } from './note_table';
 
 /*
- * "Main" component renders the whole Notebooks as a single page application
+ * "Main" component renders the whole Investigations as a single page application
  *
  * Props taken in as params are:
  * DashboardContainerByValueRenderer: Dashboard container renderer for visualization
@@ -87,14 +87,14 @@ export class Main extends React.Component<MainProps, MainState> {
       .get(`${NOTEBOOKS_API_PREFIX}/`)
       .then((res) => this.setState(res))
       .catch((err) => {
-        console.error('Issue in fetching the notebooks', err.body.message);
+        console.error('Issue in fetching the investigations', err.body.message);
       });
   };
 
   // Creates a new notebook
   createNotebook = (newNoteName: string) => {
     if (newNoteName.length >= 50 || newNoteName.length === 0) {
-      this.setToast('Invalid notebook name', 'danger');
+      this.setToast('Invalid investigation name', 'danger');
       window.location.assign('#/investigations');
       return;
     }
@@ -107,12 +107,12 @@ export class Main extends React.Component<MainProps, MainState> {
         body: JSON.stringify(newNoteObject),
       })
       .then(async (res) => {
-        this.setToast(`Notebook "${newNoteName}" successfully created!`);
+        this.setToast(`Investigation "${newNoteName}" successfully created!`);
         window.location.assign(`#/investigations/${res}`);
       })
       .catch((err) => {
         this.setToast(
-          'Please ask your administrator to enable Notebooks for you.',
+          'Please ask your administrator to enable Investigations for you.',
           'danger',
           <EuiLink href={NOTEBOOKS_DOCUMENTATION_URL} target="_blank">
             Documentation
@@ -125,7 +125,7 @@ export class Main extends React.Component<MainProps, MainState> {
   // Renames an existing notebook
   renameNotebook = (editedNoteName: string, editedNoteID: string) => {
     if (editedNoteName.length >= 50 || editedNoteName.length === 0) {
-      this.setToast('Invalid notebook name', 'danger');
+      this.setToast('Invalid investigation name', 'danger');
       return;
     }
     const renameNoteObject = {
@@ -144,11 +144,11 @@ export class Main extends React.Component<MainProps, MainState> {
           if (renamedNotebook) renamedNotebook.path = editedNoteName;
           return { data: newData };
         });
-        this.setToast(`Notebook successfully renamed into "${editedNoteName}"`);
+        this.setToast(`Investigation successfully renamed into "${editedNoteName}"`);
       })
       .catch((err) => {
         this.setToast(
-          'Error renaming notebook, please make sure you have the correct permission.',
+          'Error renaming investigation, please make sure you have the correct permission.',
           'danger'
         );
         console.error(err.body.message);
@@ -158,7 +158,7 @@ export class Main extends React.Component<MainProps, MainState> {
   // Clones an existing notebook, return new notebook's id
   cloneNotebook = (clonedNoteName: string, clonedNoteID: string): Promise<string> => {
     if (clonedNoteName.length >= 50 || clonedNoteName.length === 0) {
-      this.setToast('Invalid notebook name', 'danger');
+      this.setToast('Invalid investigation name', 'danger');
       return Promise.reject();
     }
     const cloneNoteObject = {
@@ -182,12 +182,12 @@ export class Main extends React.Component<MainProps, MainState> {
             },
           ],
         }));
-        this.setToast(`Notebook "${clonedNoteName}" successfully created!`);
+        this.setToast(`Investigation "${clonedNoteName}" successfully created!`);
         return res.body.id;
       })
       .catch((err) => {
         this.setToast(
-          'Error cloning notebook, please make sure you have the correct permission.',
+          'Error cloning investigation, please make sure you have the correct permission.',
           'danger'
         );
         console.error(err.body.message);
@@ -203,13 +203,13 @@ export class Main extends React.Component<MainProps, MainState> {
           data: prevState.data.filter((notebook) => !notebookList.includes(notebook.id)),
         }));
         const message =
-          toastMessage || `Notebook${notebookList.length > 1 ? 's' : ''} successfully deleted!`;
+          toastMessage || `Investigation${investigationList.length > 1 ? 's' : ''} successfully deleted!`;
         this.setToast(message);
         return res;
       })
       .catch((err) => {
         this.setToast(
-          'Error deleting notebook, please make sure you have the correct permission.',
+          'Error deleting investigation, please make sure you have the correct permission.',
           'danger'
         );
         console.error(err.body.message);
@@ -287,7 +287,7 @@ export class Main extends React.Component<MainProps, MainState> {
         });
       this.setToast(`Sample notebooks successfully added.`);
     } catch (err: any) {
-      this.setToast('Error adding sample notebooks.', 'danger');
+      this.setToast('Error adding sample investigations.', 'danger');
       console.error(err.body.message);
     } finally {
       this.setState({ loading: false });

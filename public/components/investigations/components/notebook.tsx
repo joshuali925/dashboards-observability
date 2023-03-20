@@ -61,7 +61,7 @@ const pageStyles: CSS.Properties = {
 };
 
 /*
- * "Notebook" component is used to display an open notebook
+ * "Investigation" component is used to display an open investigation
  *
  * Props taken in as params are:
  * DashboardContainerByValueRenderer - Dashboard container renderer for visualization
@@ -291,7 +291,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
         },
         () => this.setState({ isModalVisible: false }),
         'Name',
-        'Rename notebook',
+        'Rename investigation',
         'Cancel',
         'Rename',
         this.state.path,
@@ -315,7 +315,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
         },
         () => this.setState({ isModalVisible: false }),
         'Name',
-        'Duplicate notebook',
+        'Duplicate investigation',
         'Cancel',
         'Duplicate',
         this.state.path + ' (copy)',
@@ -330,7 +330,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       modalLayout: (
         <DeleteNotebookModal
           onConfirm={async () => {
-            const toastMessage = `Notebook "${this.state.path}" successfully deleted!`;
+            const toastMessage = `Investigation "${this.state.path}" successfully deleted!`;
             await this.props.deleteNotebook([this.props.openedNoteId], toastMessage);
             this.setState({ isModalVisible: false }, () =>
               setTimeout(() => {
@@ -340,7 +340,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
           }}
           onCancel={() => this.setState({ isModalVisible: false })}
           title={`Delete notebook "${this.state.path}"`}
-          message="Delete notebook will remove all contents in the paragraphs."
+          message="Delete investigation will remove all contents in the paragraphs."
         />
       ),
     });
@@ -596,7 +596,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       })
       .catch((err) => {
         this.props.setToast(
-          'Error fetching notebooks, please make sure you have the correct permission.',
+          'Error fetching investigations, please make sure you have the correct permission.',
           'danger'
         );
         console.error(err?.body?.message || err);
@@ -630,7 +630,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
     this.props.setBreadcrumbs([
       this.props.parentBreadcrumb,
       {
-        text: 'Notebooks',
+        text: 'Investigations',
         href: '#/investigations',
       },
       {
@@ -826,24 +826,24 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
     const noteActionsPanels: EuiContextMenuPanelDescriptor[] = [
       {
         id: 0,
-        title: 'Notebook actions',
+        title: 'Investigation actions',
         items: [
           {
-            name: 'Rename notebook',
+            name: 'Rename investigation',
             onClick: () => {
               this.setState({ isNoteActionsPopoverOpen: false });
               this.showRenameModal();
             },
           },
           {
-            name: 'Duplicate notebook',
+            name: 'Duplicate investigation',
             onClick: () => {
               this.setState({ isNoteActionsPopoverOpen: false });
               this.showCloneModal();
             },
           },
           {
-            name: 'Delete notebook',
+            name: 'Delete investigation',
             onClick: () => {
               this.setState({ isNoteActionsPopoverOpen: false });
               this.showDeleteNotebookModal();
@@ -947,7 +947,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                   withTitle
                   button={
                     <EuiButton
-                      data-test-subj="notebook-paragraph-actions-button"
+                      data-test-subj="investigation-paragraph-actions-button"
                       iconType="arrowDown"
                       iconSide="right"
                       onClick={() => this.setState({ isParaActionsPopoverOpen: true })}
@@ -968,7 +968,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                   withTitle
                   button={
                     <EuiButton
-                      data-test-subj="notebook-notebook-actions-button"
+                      data-test-subj="investigation-investigation-actions-button"
                       iconType="arrowDown"
                       iconSide="right"
                       onClick={() => this.setState({ isNoteActionsPopoverOpen: true })}

@@ -73,7 +73,7 @@ export function NoteTable(props: NoteTableProps) {
     props.setBreadcrumbs([
       props.parentBreadcrumb,
       {
-        text: 'Notebooks',
+        text: 'Investigations',
         href: '#/investigations',
       },
     ]);
@@ -110,7 +110,7 @@ export function NoteTable(props: NoteTableProps) {
   };
 
   const onDelete = async () => {
-    const toastMessage = `Notebook${
+    const toastMessage = `Investigation${
       selectedNotebooks.length > 1 ? 's' : ' "' + selectedNotebooks[0].path + '"'
     } successfully deleted!`;
     await deleteNotebook(
@@ -129,7 +129,7 @@ export function NoteTable(props: NoteTableProps) {
           history.goBack();
         },
         'Name',
-        'Create notebook',
+        'Create investigation',
         'Cancel',
         'Create',
         undefined,
@@ -145,7 +145,7 @@ export function NoteTable(props: NoteTableProps) {
         onRename,
         closeModal,
         'Name',
-        'Rename notebook',
+        'Rename investigation',
         'Cancel',
         'Rename',
         selectedNotebooks[0].path,
@@ -161,7 +161,7 @@ export function NoteTable(props: NoteTableProps) {
         onClone,
         closeModal,
         'Name',
-        'Duplicate notebook',
+        'Duplicate investigation',
         'Cancel',
         'Duplicate',
         selectedNotebooks[0].path + ' (copy)',
@@ -172,7 +172,7 @@ export function NoteTable(props: NoteTableProps) {
   };
 
   const deleteNote = () => {
-    const notebookString = `notebook${selectedNotebooks.length > 1 ? 's' : ''}`;
+    const investigationString = `investigation${selectedInvestigations.length > 1 ? 's' : ''}`;
     setModalLayout(
       <DeleteNotebookModal
         onConfirm={onDelete}
@@ -284,22 +284,22 @@ export function NoteTable(props: NoteTableProps) {
           <EuiPageHeader>
             <EuiPageHeaderSection>
               <EuiTitle size="l">
-                <h1>Notebooks</h1>
+                <h1>Investigations</h1>
               </EuiTitle>
             </EuiPageHeaderSection>
           </EuiPageHeader>
-          <EuiPageContent id="notebookArea">
+          <EuiPageContent id="investigationArea">
             <EuiPageContentHeader>
               <EuiPageContentHeaderSection>
                 <EuiTitle size="s">
                   <h3>
-                    Notebooks<span className="panel-header-count"> ({notebooks.length})</span>
+                    Investigations<span className="panel-header-count"> ({notebooks.length})</span>
                   </h3>
                 </EuiTitle>
                 <EuiSpacer size="s" />
                 <EuiText size="s" color="subdued">
-                  Use Notebooks to interactively and collaboratively develop rich reports backed by
-                  live data. Common use cases for notebooks includes creating postmortem reports,
+                  Use Investigations to interactively and collaboratively develop rich reports backed by
+                  live data. Common use cases for investigations includes creating postmortem reports,
                   designing run books, building live infrastructure reports, or even documentation.{' '}
                   <EuiLink external={true} href={NOTEBOOKS_DOCUMENTATION_URL} target="blank">
                     Learn more
@@ -320,7 +320,7 @@ export function NoteTable(props: NoteTableProps) {
                   </EuiFlexItem>
                   <EuiFlexItem>
                     <EuiButton fill href="#/investigations/create">
-                      Create notebook
+                      Create investigation
                     </EuiButton>
                   </EuiFlexItem>
                 </EuiFlexGroup>
@@ -331,7 +331,7 @@ export function NoteTable(props: NoteTableProps) {
               <>
                 <EuiFieldSearch
                   fullWidth
-                  placeholder="Search notebook name"
+                  placeholder="Search investigation name"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -369,10 +369,10 @@ export function NoteTable(props: NoteTableProps) {
               <>
                 <EuiSpacer size="xxl" />
                 <EuiText textAlign="center">
-                  <h2>No notebooks</h2>
+                  <h2>No investigations</h2>
                   <EuiSpacer size="m" />
                   <EuiText color="subdued">
-                    Use notebooks to create post-mortem reports, build live infrastructure
+                    Use investigations to create post-mortem reports, build live infrastructure
                     <br />
                     reports, or foster explorative collaborations with data.
                   </EuiText>
@@ -384,7 +384,7 @@ export function NoteTable(props: NoteTableProps) {
                       data-test-subj="note-table-empty-state-create-notebook-button"
                       fullWidth={false}
                     >
-                      Create notebook
+                      Create investigation
                     </EuiButton>
                   </EuiFlexItem>
                   <EuiFlexItem grow={false}>

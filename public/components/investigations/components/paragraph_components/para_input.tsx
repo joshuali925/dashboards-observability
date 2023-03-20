@@ -33,7 +33,7 @@ import React, { useState } from 'react';
 import { ParaType } from '../../../../../common/types/notebooks';
 
 /*
- * "ParaInput" component is used by notebook to populate paragraph inputs for an open notebook.
+ * "ParaInput" component is used by investigation to populate paragraph inputs for an open investigation.
  *
  * Props taken in as params are:
  * para - parsed paragraph from notebook

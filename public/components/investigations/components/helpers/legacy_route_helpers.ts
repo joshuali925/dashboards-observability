@@ -6,7 +6,7 @@
 import { observabilityID } from "../../../../../common/constants/shared";
 
 export const convertLegacyNotebooksUrl = (location: Location)=> {
-  const pathname = location.pathname.replace('notebooks-dashboards', observabilityID);
+  const pathname = location.pathname.replace('investigations-dashboards', observabilityID);
   const hash = `#/notebooks${location.hash.replace(/^#/, '')}${
     location.hash.includes('?') ? location.search.replace(/^\?/, '&') : location.search
   }`;

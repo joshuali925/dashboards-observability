@@ -44,7 +44,7 @@ import PPLService from '../../../../services/requests/ppl';
 import _ from 'lodash';
 
 /*
- * "Paragraphs" component is used to render cells of the notebook open and "add para div" between paragraphs
+ * "Paragraphs" component is used to render cells of the investigation open and "add para div" between paragraphs
  *
  * Props taken in as params are:
  * para - parsed paragraph from notebook
@@ -502,7 +502,7 @@ export const Paragraphs = forwardRef((props: ParagraphProps, ref) => {
     </EuiText>
   );
 
-  const paraClass = `notebooks-paragraph notebooks-paragraph-${
+  const paraClass = `investigations-paragraph investigations-paragraph-${
     uiSettingsService.get('theme:darkMode') ? 'dark' : 'light'
   }`;
 

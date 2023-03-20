@@ -20,7 +20,7 @@ import { uiSettingsService } from '../../../../../common/utils';
 import { QueryDataGridMemo } from './para_query_grid';
 
 /*
- * "ParaOutput" component is used by notebook to populate paragraph outputs for an open notebook.
+ * "ParaOutput" component is used by investigation to populate paragraph outputs for an open investigation.
  *
  * Props taken in as params are:
  * para - parsed paragraph from notebook

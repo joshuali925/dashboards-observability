@@ -128,14 +128,14 @@ export const generateInContextReport = async (
     props.setToast('Tenant error', 'danger', 'Failed to get user tenant.');
   }
 
-  const reportSource = 'Notebook';
+  const reportSource = 'Investigation';
   const contextMenuOnDemandReport = {
     query_url: baseUrl,
     time_from: 0, // no time range for notebook reports
     time_to: 0,
     report_definition: {
       report_params: {
-        report_name: 'In-context ' + document.getElementById('notebookTitle')?.innerText,
+        report_name: 'In-context ' + document.getElementById('investigationTitle')?.innerText,
         report_source: reportSource,
         description: 'In-context report download',
         core_params: {
@@ -197,7 +197,7 @@ export const generateInContextReport = async (
           props.setToast(
             'Error generating report.',
             'danger',
-            'Timed out generating on-demand report from notebook. Try again later.'
+            'Timed out generating on-demand report from investigation. Try again later.'
           );
         } else {
           // generic failure
@@ -209,7 +209,7 @@ export const generateInContextReport = async (
 
 export const contextMenuCreateReportDefinition = (baseURI: string) => {
   const reportSourceId = getReportSourceURL(baseURI);
-  let reportSource = 'notebook:';
+  let reportSource = 'investigation:';
 
   reportSource += reportSourceId.toString();
   window.location.assign(`reports-dashboards#/create?previous=${reportSource}?timeFrom=0?timeTo=0`);
