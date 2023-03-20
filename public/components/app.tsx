@@ -190,7 +190,6 @@ export const App = ({
               setBreadcrumbs={chrome.setBreadcrumbs}
               parentBreadcrumb={parentBreadcrumb}
               notifications={notifications}
-              // openedNoteId="QO14AIcBy8NPHsZTgmMq"
             />
           </MetricsListener>
         </I18nProvider>

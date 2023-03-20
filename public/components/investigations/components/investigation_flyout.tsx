@@ -4,15 +4,7 @@
  */
 /* eslint-disable no-console */
 
-import {
-  EuiButtonIcon,
-  EuiFlyout,
-  EuiFlyoutBody,
-  EuiFlyoutHeader,
-  EuiGlobalToastList,
-  EuiLink,
-  EuiTitle,
-} from '@elastic/eui';
+import { EuiButtonIcon, EuiFlyout, EuiGlobalToastList, EuiLink } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { ReactChild } from 'react';
 import { ChromeBreadcrumb, CoreStart } from '../../../../../../src/core/public';
@@ -42,7 +34,6 @@ type InvestigationFlyoutProps = {
   notifications: CoreStart['notifications'];
   parentBreadcrumb: ChromeBreadcrumb;
   setBreadcrumbs: (newBreadcrumbs: ChromeBreadcrumb[]) => void;
-  openedNoteId?: string;
 };
 
 interface InvestigationFlyoutState {
@@ -51,6 +42,7 @@ interface InvestigationFlyoutState {
   toasts: Toast[];
   loading: boolean;
   flyoutOpen: boolean;
+  openedNoteId?: string;
 }
 
 export interface NotebookType {
@@ -71,6 +63,8 @@ export class InvestigationFlyout extends React.Component<
       openedNotebook: undefined,
       toasts: [],
       loading: false,
+      flyoutOpen: false,
+      openedNoteId: 'QO14AIcBy8NPHsZTgmMq',
     };
   }
 
@@ -329,32 +323,26 @@ export class InvestigationFlyout extends React.Component<
         />
         <EuiFlyout
           ownFocus={false}
+          size="l"
           onClose={() => {
             this.setState({ flyoutOpen: false });
           }}
           className="investigations-glass-wrapper"
         >
-          <EuiFlyoutHeader hasBorder>
-            <EuiTitle>
-              <h2>Investigations</h2>
-            </EuiTitle>
-          </EuiFlyoutHeader>
-          <EuiFlyoutBody>
-            <Notebook
-              pplService={this.props.pplService}
-              openedNoteId={this.props.openedNoteId}
-              DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
-              http={this.props.http}
-              parentBreadcrumb={this.props.parentBreadcrumb}
-              setBreadcrumbs={this.props.setBreadcrumbs}
-              renameNotebook={this.renameNotebook}
-              cloneNotebook={this.cloneNotebook}
-              deleteNotebook={this.deleteNotebook}
-              setToast={this.setToast}
-              location={this.props.location}
-              history={this.props.history}
-            />
-          </EuiFlyoutBody>
+          <Notebook
+            pplService={this.props.pplService}
+            openedNoteId={this.state.openedNoteId}
+            DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
+            http={this.props.http}
+            parentBreadcrumb={this.props.parentBreadcrumb}
+            setBreadcrumbs={() => { }}
+            renameNotebook={this.renameNotebook}
+            cloneNotebook={this.cloneNotebook}
+            deleteNotebook={this.deleteNotebook}
+            setToast={this.setToast}
+            location={this.props.location}
+            history={this.props.history}
+          />
         </EuiFlyout>
       </>
     );
