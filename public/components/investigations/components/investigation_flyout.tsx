@@ -6,7 +6,6 @@
 
 import {
   EuiButtonIcon,
-  EuiComboBoxOptionOption,
   EuiFlyout,
   EuiFlyoutBody,
   EuiGlobalToastList,
@@ -51,8 +50,6 @@ interface InvestigationFlyoutState {
   loading: boolean;
   flyoutOpen: boolean;
   openedNoteId: string;
-  investigationsComboBoxOptions: Array<EuiComboBoxOptionOption<NotebookType>>;
-  selectedInvestigationOption: Array<EuiComboBoxOptionOption<NotebookType>>;
 }
 
 export interface NotebookType {
@@ -75,8 +72,6 @@ export class InvestigationFlyout extends React.Component<
       loading: false,
       flyoutOpen: false,
       openedNoteId: 'QO14AIcBy8NPHsZTgmMq',
-      investigationsComboBoxOptions: [],
-      selectedInvestigationOption: [],
     };
   }
 
@@ -310,36 +305,12 @@ export class InvestigationFlyout extends React.Component<
   };
 
   setOpenedNoteId = (openedNoteId: string) => {
-    this.setState({openedNoteId})
-  }
+    console.log('❗setting openedNoteId:', openedNoteId);
+    this.setState({ openedNoteId });
+  };
 
   componentDidMount() {
     this.fetchNotebooks();
-  }
-
-  componentDidUpdate(prevProps: InvestigationFlyoutProps, prevState: InvestigationFlyoutState) {
-    let newInvestigationsComboBoxOptions: Array<EuiComboBoxOptionOption<NotebookType>> | undefined =
-      undefined;
-    if (prevState.data !== this.state.data) {
-      newInvestigationsComboBoxOptions = this.state.data.map((notebook) => ({
-        label: notebook.path,
-        key: notebook.id,
-        value: notebook,
-      }));
-      this.setState({ investigationsComboBoxOptions: newInvestigationsComboBoxOptions });
-    }
-    // TODO remove length check after openedNoteId is dynamically set
-    // TODO fix the logic
-    if (
-      prevState.openedNoteId !== this.state.openedNoteId ||
-      this.state.selectedInvestigationOption.length === 0
-    ) {
-      this.setState({
-        selectedInvestigationOption: (
-          newInvestigationsComboBoxOptions || this.state.investigationsComboBoxOptions
-        ).filter((notebook) => notebook.key === this.state.openedNoteId),
-      });
-    }
   }
 
   render() {
@@ -373,22 +344,6 @@ export class InvestigationFlyout extends React.Component<
           }}
           className="investigations-glass-wrapper"
         >
-          {/* <EuiFlyoutHeader hasBorder>
-            <EuiComboBox
-              placeholder="Select a single option"
-              singleSelection={{ asPlainText: true }}
-              options={this.state.investigationsComboBoxOptions}
-              selectedOptions={this.state.selectedInvestigationOption}
-              isClearable={false}
-              onChange={(selectedInvestigationOption) => {
-                if (selectedInvestigationOption.length > 0)
-                  this.setState({
-                    selectedInvestigationOption,
-                    openedNoteId: selectedInvestigationOption[0].key!,
-                  });
-              }}
-            />
-          </EuiFlyoutHeader> */}
           <EuiFlyoutBody>
             <EuiPanel id="investigations-panel">
               <InvestigationTabs

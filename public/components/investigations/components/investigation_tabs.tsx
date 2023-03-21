@@ -4,7 +4,7 @@
  */
 
 import { EuiTabbedContent, EuiTabbedContentTab } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Notebook, NotebookProps } from './notebook';
 import { NoteTable, NoteTableProps } from './note_table';
 
@@ -20,15 +20,7 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
     {
       id: 'compose',
       name: 'Compose',
-      content: (
-        <NoteTable
-          {...props}
-          setOpenedNoteId={(openedNoteId: string) => {
-            props.setOpenedNoteId(openedNoteId);
-            setSelectedTab(tabs[0]);
-          }}
-        />
-      ),
+      content: 'Example 2 content.',
     },
     {
       id: 'insights',
@@ -38,10 +30,14 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
     {
       id: 'history',
       name: 'History',
-      content: 'Example 4 content.',
+      content: <NoteTable {...props} />,
     },
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
+
+  useEffect(() => {
+    setSelectedTab(tabs[0]);
+  }, [props.openedNoteId]);
 
   return (
     <>
