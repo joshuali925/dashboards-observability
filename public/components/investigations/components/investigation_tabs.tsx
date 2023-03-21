@@ -11,6 +11,7 @@ import { NoteTable, NoteTableProps } from './note_table';
 type InvestigationTabsProps = NotebookProps & NoteTableProps;
 
 export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
+  const [clickNotebook, setClickNotebook] = useState(false);
   const tabs: EuiTabbedContentTab[] = [
     {
       id: 'chat',
@@ -30,14 +31,22 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
     {
       id: 'history',
       name: 'History',
-      content: <NoteTable {...props} />,
+      content: (
+        <NoteTable
+          {...props}
+          setOpenedNoteId={(openedNoteId) => {
+            props.setOpenedNoteId(openedNoteId);
+            setClickNotebook(!clickNotebook);
+          }}
+        />
+      ),
     },
   ];
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
   useEffect(() => {
     setSelectedTab(tabs[0]);
-  }, [props.openedNoteId]);
+  }, [clickNotebook]);
 
   return (
     <>
