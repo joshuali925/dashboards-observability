@@ -15,7 +15,7 @@ export const UserInput: React.FC<UserInputProps> = (props) => {
   const submit = useCallback(() => {
     if (input.length === 0) return;
     setInput('');
-    props.addPara(input);
+    props.addPara('%llm\n' + input);
   }, [input, props.addPara]);
 
   return (

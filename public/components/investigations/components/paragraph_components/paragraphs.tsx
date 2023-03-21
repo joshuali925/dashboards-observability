@@ -37,7 +37,7 @@ import {
   SQL_DOCUMENTATION_URL,
   UI_DATE_FORMAT,
 } from '../../../../../common/constants/shared';
-import { ParaType } from '../../../../../common/types/notebooks';
+import { CODE_TYPE_REGEX, ParaType } from '../../../../../common/types/notebooks';
 import { uiSettingsService } from '../../../../../common/utils';
 import PPLService from '../../../../services/requests/ppl';
 import { ParaInput } from './para_input';
@@ -266,7 +266,9 @@ export const Paragraphs = forwardRef((props: ParagraphProps, ref) => {
   );
 
   // do not show input and EuiPanel if view mode is output_only
+  // TODO refactor this for investigations, which will always be output_only
   if (props.selectedViewId === 'output_only') {
+    // if (!CODE_TYPE_REGEX['llm'].test(para.inp)) return null;
     return (
       <>
         <EuiFlexGroup justifyContent="flexEnd">
@@ -279,7 +281,7 @@ export const Paragraphs = forwardRef((props: ParagraphProps, ref) => {
               className="investigations-chat-dialog"
               style={{ backgroundColor: '#3a71e2' }}
             >
-              <EuiText color="ghost">{para.inp}</EuiText>
+              <EuiText color="ghost">{para.inp.replace(CODE_TYPE_REGEX['llm'], '')}</EuiText>
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>

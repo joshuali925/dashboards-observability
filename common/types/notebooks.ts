@@ -51,3 +51,12 @@ export type ParaType = {
   visEndTime?: string;
   visSavedObjId?: string;
 };
+
+export const CODE_TYPE_REGEX = Object.freeze({
+  sql: /^%sql\n?/,
+  ppl: /^%ppl\n?/,
+  markdown: /^%md\n?/,
+  llm: /^%llm\n?/,
+});
+
+export type CodeType = keyof typeof CODE_TYPE_REGEX;
