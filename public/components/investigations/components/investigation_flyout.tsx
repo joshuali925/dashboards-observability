@@ -345,7 +345,7 @@ export class InvestigationFlyout extends React.Component<
           className="investigations-glass-wrapper"
         >
           <EuiFlyoutBody>
-            <EuiPanel id="investigations-panel">
+            <EuiPanel id="investigations-panel" paddingSize="none">
               <InvestigationTabs
                 pplService={this.props.pplService}
                 openedNoteId={this.state.openedNoteId}

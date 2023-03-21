@@ -51,6 +51,7 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
   return (
     <>
       <EuiTabbedContent
+        className="investigations-tabs"
         display="condensed"
         size="s"
         tabs={tabs}

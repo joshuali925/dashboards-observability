@@ -67,6 +67,22 @@
   margin-bottom: 0px !important; // override react-markdown margin-bottom
 }
 
+.investigations-tabs > .euiTabs {
+  position: sticky;
+  top: 0px;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(178, 191, 255, 0.2);
+  border: 1px solid rgba(217, 231, 255, 0.3) !important;
+  padding-left: 12px !important;
+  padding-right: 12px;
+  padding-top: 6px;
+  padding-left: 6px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
 // override EuiPanel padding and border
 .investigations-chat-dialog {
   padding: 12px !important;
