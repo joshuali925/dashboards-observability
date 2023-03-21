@@ -362,7 +362,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
         // if (this.state.selectedViewId === 'output_only')
         //   this.setState({ selectedViewId: 'view_both' });
         return new Promise<ParaType>((resolve) => {
-          this.setState({ paragraphs, parsedPara }, () => resolve(newPara))
+          this.setState({ paragraphs, parsedPara }, () => resolve(newPara));
         });
       })
       .catch((err) => {
@@ -483,7 +483,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
         paragraphs[index] = res;
         const parsedPara = [...this.state.parsedPara];
         parsedPara[index] = this.parseParagraphs([res])[0];
-        this.setState({ paragraphs, parsedPara });
+        return new Promise((resolve) => this.setState({ paragraphs, parsedPara }, resolve));
       })
       .catch((err) => {
         if (err.body.statusCode === 413)
@@ -868,13 +868,14 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
               <EuiHorizontalRule />
               <UserInput
                 addPara={async (newParaContent: string) => {
-                  const newPara = await this.addPara(
-                    this.state.paragraphs.length,
-                    newParaContent,
-                    'CODE'
-                  );
+                  const newParaIndex = this.state.paragraphs.length;
+                  const newPara = await this.addPara(newParaIndex, newParaContent, 'CODE');
+                  console.log('❗after addPara this.state.parsedPara:', this.state.parsedPara);
                   if (newPara) {
-                    this.updateRunParagraph(newPara, this.state.paragraphs.length);
+                    await this.updateRunParagraph(newPara, newParaIndex);
+                    setTimeout(() => {
+                      // TODO scroll to bottom
+                    }, 0);
                   }
                 }}
               />
