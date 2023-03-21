@@ -4,7 +4,16 @@
  */
 /* eslint-disable no-console */
 
-import { EuiButtonIcon, EuiFlyout, EuiGlobalToastList, EuiLink } from '@elastic/eui';
+import {
+  EuiButtonIcon,
+  EuiComboBox,
+  EuiComboBoxOptionOption,
+  EuiFlyout,
+  EuiFlyoutBody,
+  EuiFlyoutHeader,
+  EuiGlobalToastList,
+  EuiLink,
+} from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { ReactChild } from 'react';
 import { ChromeBreadcrumb, CoreStart } from '../../../../../../src/core/public';
@@ -42,7 +51,9 @@ interface InvestigationFlyoutState {
   toasts: Toast[];
   loading: boolean;
   flyoutOpen: boolean;
-  openedNoteId?: string;
+  openedNoteId: string;
+  investigationsComboBoxOptions: Array<EuiComboBoxOptionOption<NotebookType>>;
+  selectedInvestigationOption: Array<EuiComboBoxOptionOption<NotebookType>>;
 }
 
 export interface NotebookType {
@@ -65,6 +76,8 @@ export class InvestigationFlyout extends React.Component<
       loading: false,
       flyoutOpen: false,
       openedNoteId: 'QO14AIcBy8NPHsZTgmMq',
+      investigationsComboBoxOptions: [],
+      selectedInvestigationOption: [],
     };
   }
 
@@ -297,6 +310,35 @@ export class InvestigationFlyout extends React.Component<
     }
   };
 
+  componentDidMount() {
+    this.fetchNotebooks();
+  }
+
+  componentDidUpdate(prevProps: InvestigationFlyoutProps, prevState: InvestigationFlyoutState) {
+    let newInvestigationsComboBoxOptions: Array<EuiComboBoxOptionOption<NotebookType>> | undefined =
+      undefined;
+    if (prevState.data !== this.state.data) {
+      newInvestigationsComboBoxOptions = this.state.data.map((notebook) => ({
+        label: notebook.path,
+        key: notebook.id,
+        value: notebook,
+      }));
+      this.setState({ investigationsComboBoxOptions: newInvestigationsComboBoxOptions });
+    }
+    // TODO remove length check after openedNoteId is dynamically set
+    // TODO fix the logic
+    if (
+      prevState.openedNoteId !== this.state.openedNoteId ||
+      this.state.selectedInvestigationOption.length === 0
+    ) {
+      this.setState({
+        selectedInvestigationOption: (
+          newInvestigationsComboBoxOptions || this.state.investigationsComboBoxOptions
+        ).filter((notebook) => notebook.key === this.state.openedNoteId),
+      });
+    }
+  }
+
   render() {
     if (!this.state.flyoutOpen) {
       return (
@@ -323,26 +365,43 @@ export class InvestigationFlyout extends React.Component<
         />
         <EuiFlyout
           ownFocus={false}
-          size="l"
           onClose={() => {
             this.setState({ flyoutOpen: false });
           }}
           className="investigations-glass-wrapper"
         >
-          <Notebook
-            pplService={this.props.pplService}
-            openedNoteId={this.state.openedNoteId}
-            DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
-            http={this.props.http}
-            parentBreadcrumb={this.props.parentBreadcrumb}
-            setBreadcrumbs={() => { }}
-            renameNotebook={this.renameNotebook}
-            cloneNotebook={this.cloneNotebook}
-            deleteNotebook={this.deleteNotebook}
-            setToast={this.setToast}
-            location={this.props.location}
-            history={this.props.history}
-          />
+          <EuiFlyoutHeader hasBorder>
+            <EuiComboBox
+              placeholder="Select a single option"
+              singleSelection={{ asPlainText: true }}
+              options={this.state.investigationsComboBoxOptions}
+              selectedOptions={this.state.selectedInvestigationOption}
+              isClearable={false}
+              onChange={(selectedInvestigationOption) => {
+                if (selectedInvestigationOption.length > 0)
+                  this.setState({
+                    selectedInvestigationOption,
+                    openedNoteId: selectedInvestigationOption[0].key!,
+                  });
+              }}
+            />
+          </EuiFlyoutHeader>
+          <EuiFlyoutBody>
+            <Notebook
+              pplService={this.props.pplService}
+              openedNoteId={this.state.openedNoteId}
+              DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
+              http={this.props.http}
+              parentBreadcrumb={this.props.parentBreadcrumb}
+              setBreadcrumbs={() => {}}
+              renameNotebook={this.renameNotebook}
+              cloneNotebook={this.cloneNotebook}
+              deleteNotebook={this.deleteNotebook}
+              setToast={this.setToast}
+              location={this.props.location}
+              history={this.props.history}
+            />
+          </EuiFlyoutBody>
         </EuiFlyout>
       </>
     );

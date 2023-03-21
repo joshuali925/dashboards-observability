@@ -5,7 +5,6 @@
 
 import {
   EuiButton,
-  EuiButtonGroup,
   EuiButtonGroupOption,
   EuiCard,
   EuiContextMenu,
@@ -107,7 +106,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
   constructor(props: Readonly<NotebookProps>) {
     super(props);
     this.state = {
-      selectedViewId: 'view_both',
+      selectedViewId: 'output_only',
       path: '',
       dateCreated: '',
       dateModified: '',
@@ -675,6 +674,12 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
     this.loadNotebook();
   }
 
+  componentDidUpdate(prevProps: NotebookProps, prevState: NotebookState) {
+    if (prevProps.openedNoteId !== this.props.openedNoteId) {
+      this.loadNotebook();
+    }
+  }
+
   render() {
     const createdText = (
       <div>
@@ -904,52 +909,13 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
 
     return (
       <>
-        <EuiFlyoutHeader hasBorder>
-          <EuiTitle>
-            <h1>{this.state.path}</h1>
-          </EuiTitle>
-        </EuiFlyoutHeader>
-        <EuiFlyoutBody>
           <div style={pageStyles}>
             <EuiPage className="investigations-glass">
               <EuiPageBody component="div">
-                <EuiFlexGroup gutterSize="s" justifyContent="flexEnd">
-                  <EuiFlexItem />
-                  {this.state.parsedPara.length > 0 && (
-                    <EuiFlexItem grow={false}>
-                      <EuiButtonGroup
-                        buttonSize="m"
-                        options={viewOptions}
-                        idSelected={this.state.selectedViewId}
-                        onChange={(id) => {
-                          this.updateView(id);
-                        }}
-                      />
-                    </EuiFlexItem>
-                  )}
-                  <EuiFlexItem grow={false} />
-                  <EuiFlexItem grow={false} />
+                <EuiFlexGroup justifyContent="spaceBetween">
                   <EuiFlexItem grow={false}>
-                    <EuiPopover
-                      panelPaddingSize="none"
-                      withTitle
-                      button={
-                        <EuiButton
-                          data-test-subj="investigation-paragraph-actions-button"
-                          iconType="arrowDown"
-                          iconSide="right"
-                          onClick={() => this.setState({ isParaActionsPopoverOpen: true })}
-                        >
-                          Paragraph actions
-                        </EuiButton>
-                      }
-                      isOpen={this.state.isParaActionsPopoverOpen}
-                      closePopover={() => this.setState({ isParaActionsPopoverOpen: false })}
-                    >
-                      <EuiContextMenu initialPanelId={0} panels={paraActionsPanels} />
-                    </EuiPopover>
+                    <EuiText>{createdText}</EuiText>
                   </EuiFlexItem>
-                  {/* <EuiFlexItem grow={false}>{showReportingContextMenu}</EuiFlexItem> */}
                   <EuiFlexItem grow={false}>
                     <EuiPopover
                       panelPaddingSize="none"
@@ -969,12 +935,6 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                     >
                       <EuiContextMenu initialPanelId={0} panels={noteActionsPanels} />
                     </EuiPopover>
-                  </EuiFlexItem>
-                </EuiFlexGroup>
-                <EuiSpacer size="m" />
-                <EuiFlexGroup alignItems={'flexStart'} gutterSize={'l'}>
-                  <EuiFlexItem grow={false}>
-                    <EuiText>{createdText}</EuiText>
                   </EuiFlexItem>
                 </EuiFlexGroup>
                 {this.state.parsedPara.length > 0 ? (
@@ -1092,7 +1052,6 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
             </EuiPage>
             {this.state.isModalVisible && this.state.modalLayout}
           </div>
-        </EuiFlyoutBody>
       </>
     );
   }
