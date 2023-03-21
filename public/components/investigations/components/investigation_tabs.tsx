@@ -4,7 +4,7 @@
  */
 
 import { EuiTabbedContent, EuiTabbedContentTab } from '@elastic/eui';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Notebook, NotebookProps } from './notebook';
 import { NoteTable, NoteTableProps } from './note_table';
 
@@ -12,7 +12,7 @@ type InvestigationTabsProps = NotebookProps & NoteTableProps;
 
 export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
   const [clickNotebook, setClickNotebook] = useState(false);
-  const tabs: EuiTabbedContentTab[] = [
+  const tabs: EuiTabbedContentTab[] = useMemo(() => ([
     {
       id: 'chat',
       name: 'Chat',
@@ -41,7 +41,7 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
         />
       ),
     },
-  ];
+  ]), [clickNotebook]);
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
   useEffect(() => {
