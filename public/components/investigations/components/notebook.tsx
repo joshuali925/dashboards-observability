@@ -813,7 +813,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       <>
         <EuiPage className="investigations-glass">
           <EuiPageBody component="div">
-            <EuiFlexGroup justifyContent="spaceBetween">
+            {/* <EuiFlexGroup justifyContent="spaceBetween">
               <EuiFlexItem grow={false}>
                 <EuiText>{createdText}</EuiText>
               </EuiFlexItem>
@@ -837,7 +837,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                   <EuiContextMenu initialPanelId={0} panels={noteActionsPanels} />
                 </EuiPopover>
               </EuiFlexItem>
-            </EuiFlexGroup>
+            </EuiFlexGroup> */}
             {this.state.parsedPara.length > 0 ? (
               <>
                 {this.state.parsedPara.map((para: ParaType, index: number) => (
