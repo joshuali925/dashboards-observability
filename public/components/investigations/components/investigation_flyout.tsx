@@ -22,7 +22,7 @@ import {
   NOTEBOOKS_DOCUMENTATION_URL,
 } from '../../../../common/constants/notebooks';
 import PPLService from '../../../services/requests/ppl';
-import { Notebook } from './notebook';
+import { InvestigationTabs } from './investigation_tabs';
 
 /*
  * "InvestigationFlyout" component renders the whole Investigations as a single page application
@@ -309,6 +309,10 @@ export class InvestigationFlyout extends React.Component<
     }
   };
 
+  setOpenedNoteId = (openedNoteId: string) => {
+    this.setState({openedNoteId})
+  }
+
   componentDidMount() {
     this.fetchNotebooks();
   }
@@ -387,15 +391,20 @@ export class InvestigationFlyout extends React.Component<
           </EuiFlyoutHeader> */}
           <EuiFlyoutBody>
             <EuiPanel id="investigations-panel">
-              <Notebook
+              <InvestigationTabs
                 pplService={this.props.pplService}
                 openedNoteId={this.state.openedNoteId}
+                setOpenedNoteId={this.setOpenedNoteId}
                 DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
                 http={this.props.http}
+                createNotebook={this.createNotebook}
                 renameNotebook={this.renameNotebook}
                 cloneNotebook={this.cloneNotebook}
                 deleteNotebook={this.deleteNotebook}
                 setToast={this.setToast}
+                loading={this.state.loading}
+                fetchNotebooks={this.fetchNotebooks}
+                notebooks={this.state.data}
               />
             </EuiPanel>
           </EuiFlyoutBody>
