@@ -392,14 +392,10 @@ export class InvestigationFlyout extends React.Component<
                 openedNoteId={this.state.openedNoteId}
                 DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
                 http={this.props.http}
-                parentBreadcrumb={this.props.parentBreadcrumb}
-                setBreadcrumbs={() => {}}
                 renameNotebook={this.renameNotebook}
                 cloneNotebook={this.cloneNotebook}
                 deleteNotebook={this.deleteNotebook}
                 setToast={this.setToast}
-                location={this.props.location}
-                history={this.props.history}
               />
             </EuiPanel>
           </EuiFlyoutBody>
