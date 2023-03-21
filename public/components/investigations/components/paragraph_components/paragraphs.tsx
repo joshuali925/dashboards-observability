@@ -21,6 +21,7 @@ import {
   EuiText,
   htmlIdGenerator,
 } from '@elastic/eui';
+import _ from 'lodash';
 import moment from 'moment';
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { CoreStart } from '../../../../../../../src/core/public';
@@ -29,6 +30,7 @@ import {
   DashboardStart,
 } from '../../../../../../../src/plugins/dashboard/public';
 import { ViewMode } from '../../../../../../../src/plugins/embeddable/public';
+import { CUSTOM_PANELS_API_PREFIX } from '../../../../../common/constants/custom_panels';
 import { NOTEBOOKS_API_PREFIX } from '../../../../../common/constants/notebooks';
 import {
   PPL_DOCUMENTATION_URL,
@@ -37,11 +39,9 @@ import {
 } from '../../../../../common/constants/shared';
 import { ParaType } from '../../../../../common/types/notebooks';
 import { uiSettingsService } from '../../../../../common/utils';
+import PPLService from '../../../../services/requests/ppl';
 import { ParaInput } from './para_input';
 import { ParaOutput } from './para_output';
-import { CUSTOM_PANELS_API_PREFIX } from '../../../../../common/constants/custom_panels';
-import PPLService from '../../../../services/requests/ppl';
-import _ from 'lodash';
 
 /*
  * "Paragraphs" component is used to render cells of the investigation open and "add para div" between paragraphs
@@ -267,7 +267,39 @@ export const Paragraphs = forwardRef((props: ParagraphProps, ref) => {
 
   // do not show input and EuiPanel if view mode is output_only
   if (props.selectedViewId === 'output_only') {
-    return paraOutput;
+    return (
+      <>
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiPanel
+              grow={false}
+              paddingSize="none"
+              color="plain"
+              hasBorder
+              className="investigations-chat-dialog"
+              style={{ backgroundColor: '#3a71e2' }}
+            >
+              <EuiText color="ghost">{para.inp}</EuiText>
+            </EuiPanel>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer />
+        <EuiFlexGroup justifyContent="flexStart">
+          <EuiFlexItem grow={false}>
+            <EuiPanel
+              grow={false}
+              paddingSize="none"
+              color="plain"
+              hasBorder
+              className="investigations-chat-dialog"
+            >
+              {paraOutput}
+            </EuiPanel>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer />
+      </>
+    );
   }
 
   const renderParaHeader = (type: string, index: number) => {

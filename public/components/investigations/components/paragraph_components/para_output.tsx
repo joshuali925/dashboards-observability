@@ -108,7 +108,7 @@ export const ParaOutput = (props: {
         case 'MARKDOWN':
           return (
             <EuiText key={key} className="markdown-output-text">
-              <MarkdownRender source={val} />
+              <MarkdownRender source={val} className="investigations-markdown-content" />
             </EuiText>
           );
         case 'VISUALIZATION':
