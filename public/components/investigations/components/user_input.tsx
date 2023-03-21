@@ -4,7 +4,7 @@
  */
 
 import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSpacer, EuiTextArea } from '@elastic/eui';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 interface UserInputProps {
   addPara: (newParaContent: string) => void;
@@ -12,6 +12,12 @@ interface UserInputProps {
 
 export const UserInput: React.FC<UserInputProps> = (props) => {
   const [input, setInput] = useState('');
+  const submit = useCallback(() => {
+    if (input.length === 0) return;
+    setInput('');
+    props.addPara(input);
+  }, [input, props.addPara]);
+
   return (
     <>
       <EuiTextArea
@@ -20,13 +26,19 @@ export const UserInput: React.FC<UserInputProps> = (props) => {
         compressed
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            submit();
+          }
+        }}
       />
       <EuiSpacer size="s" />
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiFlexItem grow={false}>
-          <EuiButton fill onClick={(e) => {
-            props.addPara(input)
-          }}>Send</EuiButton>
+          <EuiButton fill onClick={submit}>
+            Send
+          </EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     </>
