@@ -40,7 +40,6 @@
 
 .investigations-glass-wrapper {
   background: rgba(217, 231, 255, 0.2);
-  border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -49,6 +48,12 @@
 
 .investigations-glass {
   background: transparent;
+}
+
+#investigations-panel {
+  background: rgba(217, 231, 255, 0.2) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(217, 231, 255, 0.3) !important;
 }
 
 #investigations-toggle-icon {

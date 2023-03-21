@@ -909,7 +909,6 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
 
     return (
       <>
-          <div style={pageStyles}>
             <EuiPage className="investigations-glass">
               <EuiPageBody component="div">
                 <EuiFlexGroup justifyContent="spaceBetween">
@@ -1051,7 +1050,6 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
               </EuiPageBody>
             </EuiPage>
             {this.state.isModalVisible && this.state.modalLayout}
-          </div>
       </>
     );
   }

@@ -6,13 +6,12 @@
 
 import {
   EuiButtonIcon,
-  EuiComboBox,
   EuiComboBoxOptionOption,
   EuiFlyout,
   EuiFlyoutBody,
-  EuiFlyoutHeader,
   EuiGlobalToastList,
   EuiLink,
+  EuiPanel,
 } from '@elastic/eui';
 import { Toast } from '@elastic/eui/src/components/toast/global_toast_list';
 import React, { ReactChild } from 'react';
@@ -370,7 +369,7 @@ export class InvestigationFlyout extends React.Component<
           }}
           className="investigations-glass-wrapper"
         >
-          <EuiFlyoutHeader hasBorder>
+          {/* <EuiFlyoutHeader hasBorder>
             <EuiComboBox
               placeholder="Select a single option"
               singleSelection={{ asPlainText: true }}
@@ -385,22 +384,24 @@ export class InvestigationFlyout extends React.Component<
                   });
               }}
             />
-          </EuiFlyoutHeader>
+          </EuiFlyoutHeader> */}
           <EuiFlyoutBody>
-            <Notebook
-              pplService={this.props.pplService}
-              openedNoteId={this.state.openedNoteId}
-              DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
-              http={this.props.http}
-              parentBreadcrumb={this.props.parentBreadcrumb}
-              setBreadcrumbs={() => {}}
-              renameNotebook={this.renameNotebook}
-              cloneNotebook={this.cloneNotebook}
-              deleteNotebook={this.deleteNotebook}
-              setToast={this.setToast}
-              location={this.props.location}
-              history={this.props.history}
-            />
+            <EuiPanel id="investigations-panel">
+              <Notebook
+                pplService={this.props.pplService}
+                openedNoteId={this.state.openedNoteId}
+                DashboardContainerByValueRenderer={this.props.DashboardContainerByValueRenderer}
+                http={this.props.http}
+                parentBreadcrumb={this.props.parentBreadcrumb}
+                setBreadcrumbs={() => {}}
+                renameNotebook={this.renameNotebook}
+                cloneNotebook={this.cloneNotebook}
+                deleteNotebook={this.deleteNotebook}
+                setToast={this.setToast}
+                location={this.props.location}
+                history={this.props.history}
+              />
+            </EuiPanel>
           </EuiFlyoutBody>
         </EuiFlyout>
       </>
