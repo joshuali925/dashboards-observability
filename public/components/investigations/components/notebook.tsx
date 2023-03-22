@@ -11,7 +11,6 @@ import {
   EuiPage,
   EuiPageBody,
 } from '@elastic/eui';
-import CSS from 'csstype';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { CoreStart } from '../../../../../../src/core/public';
@@ -30,18 +29,6 @@ import { DeleteNotebookModal, getCustomModal, getDeleteModal } from './helpers/m
 import { zeppelinParagraphParser } from './helpers/zeppelin_parser';
 import { Paragraphs } from './paragraph_components/paragraphs';
 import { UserInput } from './user_input';
-const panelStyles: CSS.Properties = {
-  float: 'left',
-  width: '100%',
-  maxWidth: '1130px',
-  marginTop: '20px',
-};
-
-const pageStyles: CSS.Properties = {
-  float: 'left',
-  width: '100%',
-  maxWidth: '1500px',
-};
 
 /*
  * "Investigation" component is used to display an open investigation
@@ -53,8 +40,10 @@ const pageStyles: CSS.Properties = {
 export type NotebookProps = {
   pplService: PPLService;
   openedNoteId: string;
+  setOpenedNoteId: (openedNoteId: string) => Promise<void>;
   DashboardContainerByValueRenderer: DashboardStart['DashboardContainerByValueRenderer'];
   http: CoreStart['http'];
+  createNotebook: (newNoteName: string) => Promise<string>;
   renameNotebook: (newNoteName: string, noteId: string) => void;
   cloneNotebook: (newNoteName: string, noteId: string) => Promise<string>;
   deleteNotebook: (noteList: string[], toastMessage?: string) => void;
@@ -338,13 +327,19 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
   };
 
   // Backend call to add a paragraph, switch to "view both" if in output only view
-  addPara = (index: number, newParaContent: string, inpType: string) => {
+  addPara = async (index: number, newParaContent: string, inpType: string) => {
     const addParaObj = {
       noteId: this.props.openedNoteId,
       paragraphIndex: index,
       paragraphInput: newParaContent,
       inputType: inpType,
     };
+    if (this.props.openedNoteId.length === 0) {
+      const noteId = await this.props.createNotebook(newParaContent.substring(5, 45));
+      await this.props.setOpenedNoteId(noteId);
+      console.log('❗addPara this.props.openedNoteId:', this.props.openedNoteId);
+      addParaObj.noteId = noteId;
+    }
 
     return this.props.http
       .post(`${NOTEBOOKS_API_PREFIX}/paragraph/`, {
@@ -599,48 +594,20 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
     this.setState({ parsedPara });
   };
 
-  checkIfReportingPluginIsInstalled() {
-    fetch('../api/status', {
-      headers: {
-        'Content-Type': 'application/json',
-        'osd-xsrf': 'true',
-        'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
-        pragma: 'no-cache',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'same-origin',
-      },
-      method: 'GET',
-      referrerPolicy: 'strict-origin-when-cross-origin',
-      mode: 'cors',
-      credentials: 'include',
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then((data) => {
-        for (let i = 0; i < data.status.statuses.length; ++i) {
-          if (data.status.statuses[i].id.includes('plugin:reportsDashboards')) {
-            this.setState({ isReportingPluginInstalled: true });
-          }
-        }
-      })
-      .catch((error) => {
-        console.log('error is', error);
-      });
-  }
-
   componentDidMount() {
-    this.loadNotebook();
+    if (this.props.openedNoteId.length > 0) {
+      this.loadNotebook();
+    }
   }
 
   componentDidUpdate(prevProps: NotebookProps, prevState: NotebookState) {
-    if (prevProps.openedNoteId !== this.props.openedNoteId) {
+    if (prevProps.openedNoteId !== this.props.openedNoteId && this.props.openedNoteId.length > 0) {
       this.loadNotebook();
     }
   }
 
   render() {
+      console.log('❗this.props.openedNoteId:', this.props.openedNoteId);
     const createdText = (
       <div>
         <p>
@@ -870,7 +837,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                 addPara={async (newParaContent: string) => {
                   const newParaIndex = this.state.paragraphs.length;
                   const newPara = await this.addPara(newParaIndex, newParaContent, 'CODE');
-                  console.log('❗after addPara this.state.parsedPara:', this.state.parsedPara);
+                  console.log('❗after addPara this.state.parsedPara:',this.props.openedNoteId, this.state.parsedPara);
                   if (newPara) {
                     await this.updateRunParagraph(newPara, newParaIndex);
                     setTimeout(() => {

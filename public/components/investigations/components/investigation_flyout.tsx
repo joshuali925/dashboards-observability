@@ -71,7 +71,7 @@ export class InvestigationFlyout extends React.Component<
       toasts: [],
       loading: false,
       flyoutOpen: false,
-      openedNoteId: 'QO14AIcBy8NPHsZTgmMq',
+      openedNoteId: '',
     };
   }
 
@@ -100,7 +100,7 @@ export class InvestigationFlyout extends React.Component<
       });
   };
 
-  // Creates a new notebook
+  // Creates a new notebook, returns notebook id
   createNotebook = (newNoteName: string) => {
     if (newNoteName.length >= 50 || newNoteName.length === 0) {
       this.setToast('Invalid investigation name', 'danger');
@@ -114,10 +114,6 @@ export class InvestigationFlyout extends React.Component<
     return this.props.http
       .post(`${NOTEBOOKS_API_PREFIX}/note`, {
         body: JSON.stringify(newNoteObject),
-      })
-      .then(async (res) => {
-        this.setToast(`Investigation "${newNoteName}" successfully created!`);
-        window.location.assign(`#/investigations/${res}`);
       })
       .catch((err) => {
         this.setToast(
@@ -305,8 +301,7 @@ export class InvestigationFlyout extends React.Component<
   };
 
   setOpenedNoteId = (openedNoteId: string) => {
-    console.log('❗setting openedNoteId:', openedNoteId);
-    this.setState({ openedNoteId });
+    return new Promise<void>((resolve) => this.setState({ openedNoteId }, resolve));
   };
 
   componentDidMount() {
@@ -314,29 +309,38 @@ export class InvestigationFlyout extends React.Component<
   }
 
   render() {
+    const toasts = (
+      <EuiGlobalToastList
+        toasts={this.state.toasts}
+        dismissToast={(removedToast) => {
+          this.setState({
+            toasts: this.state.toasts.filter((toast) => toast.id !== removedToast.id),
+          });
+        }}
+        toastLifeTimeMs={6000}
+      />
+    );
+
     if (!this.state.flyoutOpen) {
       return (
-        <EuiButtonIcon
-          iconType="faceHappy"
-          iconSize="l"
-          display="empty"
-          color="primary"
-          id="investigations-toggle-icon"
-          onClick={() => this.setState({ flyoutOpen: true })}
-        />
+        <>
+          {toasts}
+          <EuiButtonIcon
+            iconType="faceHappy"
+            iconSize="l"
+            display="empty"
+            color="primary"
+            id="investigations-toggle-icon"
+            onClick={() => this.setState({ flyoutOpen: true })}
+          />
+        </>
       );
     }
+    console.log('❗this.state.openedNoteId:', this.state.openedNoteId);
+
     return (
       <>
-        <EuiGlobalToastList
-          toasts={this.state.toasts}
-          dismissToast={(removedToast) => {
-            this.setState({
-              toasts: this.state.toasts.filter((toast) => toast.id !== removedToast.id),
-            });
-          }}
-          toastLifeTimeMs={6000}
-        />
+        {toasts}
         <EuiFlyout
           ownFocus={false}
           onClose={() => {
