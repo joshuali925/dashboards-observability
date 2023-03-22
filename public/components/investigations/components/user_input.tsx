@@ -23,6 +23,7 @@ export const UserInput: React.FC<UserInputProps> = (props) => {
     <>
       <EuiTextArea
         placeholder="Placeholder text"
+        autoFocus
         fullWidth
         compressed
         value={input}

@@ -66,6 +66,7 @@ type NotebookState = {
   queryParagraphErrorMessage: string;
 };
 export class Notebook extends Component<NotebookProps, NotebookState> {
+  private messagesEndRef: React.RefObject<HTMLDivElement>;
   constructor(props: Readonly<NotebookProps>) {
     super(props);
     this.state = {
@@ -84,6 +85,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       showQueryParagraphError: false,
       queryParagraphErrorMessage: '',
     };
+    this.messagesEndRef = React.createRef();
   }
 
   parseAllParagraphs = () => {
@@ -579,8 +581,12 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
     this.setState({ parsedPara });
   };
 
+  scrollToBottom = () => {
+    this.messagesEndRef.current?.scrollIntoView();
+  };
+
   componentDidMount() {
-    if (this.props.openedNoteId.length > 0) {
+    if (this.props.openedNoteId) {
       this.loadNotebook();
     }
   }
@@ -598,6 +604,9 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       } else {
         this.loadNotebook();
       }
+    }
+    if (prevState.parsedPara != this.state.parsedPara) {
+      this.scrollToBottom();
     }
   }
 
@@ -829,13 +838,11 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                   const newPara = await this.addPara(newParaIndex, newParaContent, 'CODE');
                   if (newPara) {
                     await this.updateRunParagraph(newPara, newParaIndex);
-                    setTimeout(() => {
-                      // TODO scroll to bottom
-                    }, 0);
                   }
                 }}
                 openNew={() => this.props.setOpenedNoteId('')}
               />
+              <div ref={this.messagesEndRef} />
             </>
           </EuiPageBody>
         </EuiPage>
