@@ -26,6 +26,7 @@ import PPLService from '../../../services/requests/ppl';
 import { defaultParagraphParser } from './helpers/default_parser';
 import { DeleteNotebookModal, getCustomModal, getDeleteModal } from './helpers/modal_containers';
 import { zeppelinParagraphParser } from './helpers/zeppelin_parser';
+import { ChatBubble } from './paragraph_components/chat_bubble';
 import { Paragraphs } from './paragraph_components/paragraphs';
 import { UserInput } from './user_input';
 
@@ -800,6 +801,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
             </EuiFlexGroup> */}
 
             <>
+              <ChatBubble output="Hello I'm an Observability AI assistance - how can I help you today?" />
               {this.state.parsedPara.map((para: ParaType, index: number) => (
                 <div
                   ref={this.state.parsedPara[index].paraDivRef}
