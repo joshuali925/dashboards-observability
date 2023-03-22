@@ -20,7 +20,7 @@ import {
 } from '../../common/helpers/notebooks/query_helpers';
 import { getSampleNotebooks } from '../../common/helpers/notebooks/sample_notebooks';
 import { NotebookAdaptor } from './notebook_adaptor';
-import { httpsPost } from './rest_requester';
+import { request } from './rest_requester';
 
 export class DefaultBackend implements NotebookAdaptor {
   backend = 'Default Backend';
@@ -406,7 +406,8 @@ export class DefaultBackend implements NotebookAdaptor {
                 },
               ];
             } else if (codeType === 'llm') {
-              const response = (await httpsPost('http://localhost:8000/predict', {
+              const response = (await request('http://localhost:8000/predict', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: inputWithoutType }),
               })) as string[];

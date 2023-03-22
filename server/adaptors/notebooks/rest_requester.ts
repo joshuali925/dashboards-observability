@@ -1,21 +1,26 @@
-const https = require('http');
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-export function httpsPost(url: string, { body, ...options }) {
+import http, { RequestOptions } from 'http';
+import https from 'https';
+
+export function request(url: string, { body, ...options }: RequestOptions & { body: any }) {
   return new Promise((resolve, reject) => {
-    const req = https.request(
+    const req = (url.startsWith('https://') || options.protocol === 'https' ? https : http).request(
       url,
       {
-        method: 'POST',
         ...options,
       },
       (res) => {
-        const chunks = [];
+        const chunks: Uint8Array[] = [];
         res.on('data', (data) => chunks.push(data));
         res.on('end', () => {
           let resBody = Buffer.concat(chunks);
           switch (res.headers['content-type']) {
             case 'application/json':
-              resBody = JSON.parse(resBody);
+              resBody = JSON.parse(resBody.toString());
               break;
           }
           resolve(resBody);
