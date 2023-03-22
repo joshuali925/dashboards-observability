@@ -22,6 +22,7 @@ export const UserInput: React.FC<UserInputProps> = (props) => {
   return (
     <>
       <EuiTextArea
+        className="investigations-glass"
         placeholder="Placeholder text"
         autoFocus
         fullWidth

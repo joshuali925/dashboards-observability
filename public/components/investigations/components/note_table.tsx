@@ -237,6 +237,7 @@ export function NoteTable(props: NoteTableProps) {
       <EuiFlexGroup>
         <EuiFlexItem>
           <EuiFieldSearch
+            className="investigations-glass"
             fullWidth
             placeholder="Search investigation name"
             value={searchQuery}
