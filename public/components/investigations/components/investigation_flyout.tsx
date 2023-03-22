@@ -209,7 +209,7 @@ export class InvestigationFlyout extends React.Component<
         }));
         const message =
           toastMessage ||
-          `Investigation${investigationList.length > 1 ? 's' : ''} successfully deleted!`;
+          `Investigation${notebookList.length > 1 ? 's' : ''} successfully deleted!`;
         this.setToast(message);
         return res;
       })
@@ -336,7 +336,6 @@ export class InvestigationFlyout extends React.Component<
         </>
       );
     }
-    console.log('❗this.state.openedNoteId:', this.state.openedNoteId);
 
     return (
       <>

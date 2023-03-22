@@ -12,40 +12,57 @@ type InvestigationTabsProps = NotebookProps & NoteTableProps;
 
 export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
   const [clickNotebook, setClickNotebook] = useState(false);
-  const tabs: EuiTabbedContentTab[] = useMemo(() => ([
-    {
-      id: 'chat',
-      name: 'Chat',
-      content: <Notebook {...props} />,
-    },
-    {
-      id: 'compose',
-      name: 'Compose',
-      content: 'Example 2 content.',
-    },
-    {
-      id: 'insights',
-      name: 'Insights',
-      content: 'Example 3 content.',
-    },
-    {
-      id: 'history',
-      name: 'History',
-      content: (
-        <NoteTable
-          {...props}
-          setOpenedNoteId={(openedNoteId) => {
-            props.setOpenedNoteId(openedNoteId);
-            setClickNotebook(!clickNotebook);
-          }}
-        />
-      ),
-    },
-  ]), [clickNotebook, props.openedNoteId, props.notebooks]);
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const tabs: EuiTabbedContentTab[] = useMemo(
+    () => {
+      return [
+      {
+        id: 'chat',
+        name: 'Chat',
+        content: (
+          <Notebook
+            pplService={props.pplService}
+            openedNoteId={props.openedNoteId}
+            setOpenedNoteId={props.setOpenedNoteId}
+            DashboardContainerByValueRenderer={props.DashboardContainerByValueRenderer}
+            http={props.http}
+            createNotebook={props.createNotebook}
+            renameNotebook={props.renameNotebook}
+            cloneNotebook={props.cloneNotebook}
+            deleteNotebook={props.deleteNotebook}
+            setToast={props.setToast}
+          />
+        ),
+      },
+      {
+        id: 'compose',
+        name: 'Compose',
+        content: 'Example 2 content.',
+      },
+      {
+        id: 'insights',
+        name: 'Insights',
+        content: 'Example 3 content.',
+      },
+      {
+        id: 'history',
+        name: 'History',
+        content: (
+          <NoteTable
+            {...props}
+            setOpenedNoteId={(openedNoteId) => {
+              props.setOpenedNoteId(openedNoteId);
+              setClickNotebook(!clickNotebook);
+            }}
+          />
+        ),
+      },
+    ]},
+    [clickNotebook, props.openedNoteId, props.notebooks]
+  );
+  const [selectedId, setSelectedId] = useState(tabs[0].id);
 
   useEffect(() => {
-    setSelectedTab(tabs[0]);
+    setSelectedId(tabs[0].id);
   }, [clickNotebook]);
 
   return (
@@ -55,8 +72,8 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
         display="condensed"
         size="s"
         tabs={tabs}
-        selectedTab={selectedTab}
-        onTabClick={(selectedTab) => setSelectedTab(selectedTab)}
+        selectedTab={tabs.find((tab) => tab.id === selectedId)}
+        onTabClick={(selectedTab) => setSelectedId(selectedTab.id)}
       />
     </>
   );

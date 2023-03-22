@@ -367,8 +367,6 @@ export class DefaultBackend implements NotebookAdaptor {
         const startTime = now();
         const updatedParagraph = { ...paragraphs[index] };
         if (paragraphs[index].id === paragraphId) {
-          console.log('❗index:', index);
-          console.log('❗paragraphs[index]:', paragraphs[index]);
           updatedParagraph.dateModified = new Date().toISOString();
           if (paragraphs[index].input.inputType === 'VISUALIZATION') {
             updatedParagraph.dateModified = new Date().toISOString();

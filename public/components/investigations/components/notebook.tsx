@@ -4,7 +4,7 @@
  */
 
 import {
-  EuiButtonGroupOption,
+  EuiButtonGroupOptionProps,
   EuiContextMenuPanelDescriptor,
   EuiHorizontalRule,
   EuiOverlayMask,
@@ -23,7 +23,6 @@ import {
 import { UI_DATE_FORMAT } from '../../../../common/constants/shared';
 import { ParaType } from '../../../../common/types/notebooks';
 import PPLService from '../../../services/requests/ppl';
-import { GenerateReportLoadingModal } from './helpers/custom_modals/reporting_loading_modal';
 import { defaultParagraphParser } from './helpers/default_parser';
 import { DeleteNotebookModal, getCustomModal, getDeleteModal } from './helpers/modal_containers';
 import { zeppelinParagraphParser } from './helpers/zeppelin_parser';
@@ -61,9 +60,6 @@ type NotebookState = {
   isAddParaPopoverOpen: boolean;
   isParaActionsPopoverOpen: boolean;
   isNoteActionsPopoverOpen: boolean;
-  isReportingPluginInstalled: boolean;
-  isReportingActionsPopoverOpen: boolean;
-  isReportingLoadingModalOpen: boolean;
   isModalVisible: boolean;
   modalLayout: React.ReactNode;
   showQueryParagraphError: boolean;
@@ -83,19 +79,12 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       isAddParaPopoverOpen: false,
       isParaActionsPopoverOpen: false,
       isNoteActionsPopoverOpen: false,
-      isReportingPluginInstalled: false,
-      isReportingActionsPopoverOpen: false,
-      isReportingLoadingModalOpen: false,
       isModalVisible: false,
       modalLayout: <EuiOverlayMask></EuiOverlayMask>,
       showQueryParagraphError: false,
       queryParagraphErrorMessage: '',
     };
   }
-
-  toggleReportingLoadingModal = (show: boolean) => {
-    this.setState({ isReportingLoadingModalOpen: show });
-  };
 
   parseAllParagraphs = () => {
     let parsedPara = this.parseParagraphs(this.state.paragraphs);
@@ -335,9 +324,8 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       inputType: inpType,
     };
     if (this.props.openedNoteId.length === 0) {
-      const noteId = await this.props.createNotebook(newParaContent.substring(5, 45));
+      const noteId = await this.props.createNotebook(newParaContent.substring(5, 55));
       await this.props.setOpenedNoteId(noteId);
-      console.log('❗addPara this.props.openedNoteId:', this.props.openedNoteId);
       addParaObj.noteId = noteId;
     }
 
@@ -563,10 +551,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
         this.setState(res, this.parseAllParagraphs);
       })
       .catch((err) => {
-        this.props.setToast(
-          'Error fetching investigations, please make sure you have the correct permission.',
-          'danger'
-        );
+        this.props.setOpenedNoteId('');
         console.error(err?.body?.message || err);
       });
   };
@@ -601,13 +586,22 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
   }
 
   componentDidUpdate(prevProps: NotebookProps, prevState: NotebookState) {
-    if (prevProps.openedNoteId !== this.props.openedNoteId && this.props.openedNoteId.length > 0) {
-      this.loadNotebook();
+    if (prevProps.openedNoteId !== this.props.openedNoteId) {
+      if (!this.props.openedNoteId) {
+        this.setState({
+          path: '',
+          dateCreated: '',
+          dateModified: '',
+          paragraphs: [],
+          parsedPara: [],
+        });
+      } else {
+        this.loadNotebook();
+      }
     }
   }
 
   render() {
-      console.log('❗this.props.openedNoteId:', this.props.openedNoteId);
     const createdText = (
       <div>
         <p>
@@ -615,7 +609,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
         </p>
       </div>
     );
-    const viewOptions: EuiButtonGroupOption[] = [
+    const viewOptions: EuiButtonGroupOptionProps[] = [
       {
         id: 'view_both',
         label: 'View both',
@@ -766,10 +760,6 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       },
     ];
 
-    const showLoadingModal = this.state.isReportingLoadingModalOpen ? (
-      <GenerateReportLoadingModal setShowLoading={this.toggleReportingLoadingModal} />
-    ) : null;
-
     return (
       <>
         <EuiPage className="investigations-glass">
@@ -837,7 +827,6 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                 addPara={async (newParaContent: string) => {
                   const newParaIndex = this.state.paragraphs.length;
                   const newPara = await this.addPara(newParaIndex, newParaContent, 'CODE');
-                  console.log('❗after addPara this.state.parsedPara:',this.props.openedNoteId, this.state.parsedPara);
                   if (newPara) {
                     await this.updateRunParagraph(newPara, newParaIndex);
                     setTimeout(() => {
@@ -845,31 +834,9 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
                     }, 0);
                   }
                 }}
+                openNew={() => this.props.setOpenedNoteId('')}
               />
-              {/* {this.state.selectedViewId !== 'output_only' && (
-                <>
-                  <EuiSpacer />
-                  <EuiPopover
-                    panelPaddingSize="none"
-                    withTitle
-                    button={
-                      <EuiButton
-                        iconType="arrowDown"
-                        iconSide="right"
-                        onClick={() => this.setState({ isAddParaPopoverOpen: true })}
-                      >
-                        Add paragraph
-                      </EuiButton>
-                    }
-                    isOpen={this.state.isAddParaPopoverOpen}
-                    closePopover={() => this.setState({ isAddParaPopoverOpen: false })}
-                  >
-                    <EuiContextMenu initialPanelId={0} panels={addParaPanels} />
-                  </EuiPopover>
-                </>
-              )} */}
             </>
-            {showLoadingModal}
           </EuiPageBody>
         </EuiPage>
         {this.state.isModalVisible && this.state.modalLayout}

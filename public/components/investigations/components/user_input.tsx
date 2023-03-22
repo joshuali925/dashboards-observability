@@ -8,6 +8,7 @@ import React, { useCallback, useState } from 'react';
 
 interface UserInputProps {
   addPara: (newParaContent: string) => void;
+  openNew: () => Promise<void>;
 }
 
 export const UserInput: React.FC<UserInputProps> = (props) => {
@@ -35,6 +36,11 @@ export const UserInput: React.FC<UserInputProps> = (props) => {
       />
       <EuiSpacer size="s" />
       <EuiFlexGroup justifyContent="flexEnd">
+        <EuiFlexItem grow={false}>
+          <EuiButton onClick={props.openNew}>
+            New Investigation
+          </EuiButton>
+        </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiButton fill onClick={submit}>
             Send

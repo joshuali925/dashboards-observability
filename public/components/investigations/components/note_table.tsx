@@ -27,7 +27,7 @@ export interface NoteTableProps {
   fetchNotebooks: () => void;
   notebooks: NotebookType[];
   setOpenedNoteId: (openedNoteId: string) => void;
-  createNotebook: (newNoteName: string) => void;
+  createNotebook: (newNoteName: string) => Promise<string>;
   renameNotebook: (newNoteName: string, noteId: string) => void;
   cloneNotebook: (newNoteName: string, noteId: string) => void;
   deleteNotebook: (noteList: string[], toastMessage?: string) => void;
@@ -228,7 +228,6 @@ export function NoteTable(props: NoteTableProps) {
     }>
   >;
 
-              console.log('❗notebooks:', notebooks);
   return (
     <>
       <EuiFieldSearch
