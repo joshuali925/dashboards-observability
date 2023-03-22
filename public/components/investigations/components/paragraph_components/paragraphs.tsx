@@ -281,7 +281,9 @@ export const Paragraphs = forwardRef((props: ParagraphProps, ref) => {
               className="investigations-chat-dialog"
               style={{ backgroundColor: '#3a71e2' }}
             >
-              <EuiText color="ghost">{para.inp.replace(CODE_TYPE_REGEX['llm'], '')}</EuiText>
+              <EuiText color="ghost" style={{ whiteSpace: 'pre-line' }}>
+                {para.inp.replace(CODE_TYPE_REGEX['llm'], '')}
+              </EuiText>
             </EuiPanel>
           </EuiFlexItem>
         </EuiFlexGroup>
