@@ -40,6 +40,7 @@ import {
 import { CODE_TYPE_REGEX, ParaType } from '../../../../../common/types/notebooks';
 import { uiSettingsService } from '../../../../../common/utils';
 import PPLService from '../../../../services/requests/ppl';
+import { ChatBubble } from './chat_bubble';
 import { ParaInput } from './para_input';
 import { ParaOutput } from './para_output';
 
@@ -269,41 +270,7 @@ export const Paragraphs = forwardRef((props: ParagraphProps, ref) => {
   // TODO refactor this for investigations, which will always be output_only
   if (props.selectedViewId === 'output_only') {
     // if (!CODE_TYPE_REGEX['llm'].test(para.inp)) return null;
-    return (
-      <>
-        <EuiFlexGroup justifyContent="flexEnd">
-          <EuiFlexItem grow={false}>
-            <EuiPanel
-              grow={false}
-              paddingSize="none"
-              color="plain"
-              hasBorder
-              className="investigations-chat-dialog"
-              style={{ backgroundColor: '#3a71e2' }}
-            >
-              <EuiText color="ghost" style={{ whiteSpace: 'pre-line' }}>
-                {para.inp.replace(CODE_TYPE_REGEX['llm'], '')}
-              </EuiText>
-            </EuiPanel>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer />
-        <EuiFlexGroup justifyContent="flexStart">
-          <EuiFlexItem grow={false}>
-            <EuiPanel
-              grow={false}
-              paddingSize="none"
-              color="plain"
-              hasBorder
-              className="investigations-chat-dialog"
-            >
-              {paraOutput}
-            </EuiPanel>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer />
-      </>
-    );
+    return <ChatBubble input={para.inp.replace(CODE_TYPE_REGEX['llm'], '')} output={paraOutput} />;
   }
 
   const renderParaHeader = (type: string, index: number) => {
