@@ -20,6 +20,7 @@ import {
 } from '../../common/helpers/notebooks/query_helpers';
 import { getSampleNotebooks } from '../../common/helpers/notebooks/sample_notebooks';
 import { NotebookAdaptor } from './notebook_adaptor';
+import { httpsPost } from './rest_requester';
 
 export class DefaultBackend implements NotebookAdaptor {
   backend = 'Default Backend';
@@ -407,10 +408,14 @@ export class DefaultBackend implements NotebookAdaptor {
                 },
               ];
             } else if (codeType === 'llm') {
+              const response = (await httpsPost('http://localhost:8000/predict', {
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: inputWithoutType }),
+              })) as string[];
               updatedParagraph.output = [
                 {
                   outputType: 'MARKDOWN',
-                  result: inputWithoutType,
+                  result: response[0],
                   execution_time: `${(now() - startTime).toFixed(3)} ms`,
                 },
               ];
