@@ -6,11 +6,15 @@
 import {
   EuiButton,
   EuiContextMenuItem,
+  EuiContextMenuPanel,
   EuiFieldSearch,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiHorizontalRule,
   EuiInMemoryTable,
   EuiLink,
   EuiOverlayMask,
+  EuiPopover,
   EuiTableFieldDataColumnType,
 } from '@elastic/eui';
 import _ from 'lodash';
@@ -140,7 +144,7 @@ export function NoteTable(props: NoteTableProps) {
   };
 
   const deleteNote = () => {
-    const investigationString = `investigation${selectedInvestigations.length > 1 ? 's' : ''}`;
+    const notebookString = `investigation${selectedNotebooks.length > 1 ? 's' : ''}`;
     setModalLayout(
       <DeleteNotebookModal
         onConfirm={onDelete}
@@ -230,14 +234,29 @@ export function NoteTable(props: NoteTableProps) {
 
   return (
     <>
-      <EuiFieldSearch
-        fullWidth
-        placeholder="Search investigation name"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      <EuiFlexGroup>
+        <EuiFlexItem>
+          <EuiFieldSearch
+            fullWidth
+            placeholder="Search investigation name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </EuiFlexItem>
+        <EuiFlexItem grow={false}>
+          <EuiPopover
+            panelPaddingSize="none"
+            button={popoverButton}
+            isOpen={isActionsPopoverOpen}
+            closePopover={() => setIsActionsPopoverOpen(false)}
+          >
+            <EuiContextMenuPanel items={popoverItems} />
+          </EuiPopover>
+        </EuiFlexItem>
+      </EuiFlexGroup>
       <EuiHorizontalRule margin="m" />
       <EuiInMemoryTable
+        className="investigations-glass"
         loading={props.loading}
         items={
           searchQuery
@@ -265,132 +284,7 @@ export function NoteTable(props: NoteTableProps) {
           onSelectionChange: (items) => setSelectedNotebooks(items),
         }}
       />
+      {isModalVisible && modalLayout}
     </>
   );
-
-  // return (
-  //   <div style={pageStyles}>
-  //     <EuiPage>
-  //       <EuiPageBody component="div">
-  //         <EuiPageHeader>
-  //           <EuiPageHeaderSection>
-  //             <EuiTitle size="l">
-  //               <h1>Investigations</h1>
-  //             </EuiTitle>
-  //           </EuiPageHeaderSection>
-  //         </EuiPageHeader>
-  //         <EuiPageContent id="investigationArea">
-  //           <EuiPageContentHeader>
-  //             <EuiPageContentHeaderSection>
-  //               <EuiTitle size="s">
-  //                 <h3>
-  //                   Investigations<span className="panel-header-count"> ({notebooks.length})</span>
-  //                 </h3>
-  //               </EuiTitle>
-  //               <EuiSpacer size="s" />
-  //               <EuiText size="s" color="subdued">
-  //                 Use Investigations to interactively and collaboratively develop rich reports backed by
-  //                 live data. Common use cases for investigations includes creating postmortem reports,
-  //                 designing run books, building live infrastructure reports, or even documentation.{' '}
-  //                 <EuiLink external={true} href={NOTEBOOKS_DOCUMENTATION_URL} target="blank">
-  //                   Learn more
-  //                 </EuiLink>
-  //               </EuiText>
-  //             </EuiPageContentHeaderSection>
-  //             <EuiPageContentHeaderSection>
-  //               <EuiFlexGroup gutterSize="s">
-  //                 <EuiFlexItem>
-  //                   <EuiPopover
-  //                     panelPaddingSize="none"
-  //                     button={popoverButton}
-  //                     isOpen={isActionsPopoverOpen}
-  //                     closePopover={() => setIsActionsPopoverOpen(false)}
-  //                   >
-  //                     <EuiContextMenuPanel items={popoverItems} />
-  //                   </EuiPopover>
-  //                 </EuiFlexItem>
-  //                 <EuiFlexItem>
-  //                   <EuiButton fill href="#/investigations/create">
-  //                     Create investigation
-  //                   </EuiButton>
-  //                 </EuiFlexItem>
-  //               </EuiFlexGroup>
-  //             </EuiPageContentHeaderSection>
-  //           </EuiPageContentHeader>
-  //           <EuiHorizontalRule margin="m" />
-  //           {notebooks.length > 0 ? (
-  //             <>
-  //               <EuiFieldSearch
-  //                 fullWidth
-  //                 placeholder="Search investigation name"
-  //                 value={searchQuery}
-  //                 onChange={(e) => setSearchQuery(e.target.value)}
-  //               />
-  //               <EuiHorizontalRule margin="m" />
-  //               <EuiInMemoryTable
-  //                 loading={props.loading}
-  //                 items={
-  //                   searchQuery
-  //                     ? notebooks.filter((notebook) =>
-  //                         notebook.path.toLowerCase().includes(searchQuery.toLowerCase())
-  //                       )
-  //                     : notebooks
-  //                 }
-  //                 itemId="id"
-  //                 columns={tableColumns}
-  //                 tableLayout="auto"
-  //                 pagination={{
-  //                   initialPageSize: 10,
-  //                   pageSizeOptions: [8, 10, 13],
-  //                 }}
-  //                 sorting={{
-  //                   sort: {
-  //                     field: 'dateModified',
-  //                     direction: 'desc',
-  //                   },
-  //                 }}
-  //                 allowNeutralSort={false}
-  //                 isSelectable={true}
-  //                 selection={{
-  //                   onSelectionChange: (items) => setSelectedNotebooks(items),
-  //                 }}
-  //               />
-  //             </>
-  //           ) : (
-  //             <>
-  //               <EuiSpacer size="xxl" />
-  //               <EuiText textAlign="center">
-  //                 <h2>No investigations</h2>
-  //                 <EuiSpacer size="m" />
-  //                 <EuiText color="subdued">
-  //                   Use investigations to create post-mortem reports, build live infrastructure
-  //                   <br />
-  //                   reports, or foster explorative collaborations with data.
-  //                 </EuiText>
-  //               </EuiText>
-  //               <EuiSpacer size="m" />
-  //               <EuiFlexGroup justifyContent="center">
-  //                 <EuiFlexItem grow={false}>
-  //                   <EuiButton href="#/investigations/create"
-  //                     data-test-subj="note-table-empty-state-create-notebook-button"
-  //                     fullWidth={false}
-  //                   >
-  //                     Create investigation
-  //                   </EuiButton>
-  //                 </EuiFlexItem>
-  //                 <EuiFlexItem grow={false}>
-  //                   <EuiButton fullWidth={false} onClick={() => addSampleNotebooks()}>
-  //                     Add samples
-  //                   </EuiButton>
-  //                 </EuiFlexItem>
-  //               </EuiFlexGroup>
-  //               <EuiSpacer size="xxl" />
-  //             </>
-  //           )}
-  //         </EuiPageContent>
-  //       </EuiPageBody>
-  //     </EuiPage>
-  //     {isModalVisible && modalLayout}
-  //   </div>
-  // );
 }

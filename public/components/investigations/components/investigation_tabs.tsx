@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EuiTabbedContent, EuiTabbedContentTab } from '@elastic/eui';
+import { EuiPage, EuiPageBody, EuiTabbedContent, EuiTabbedContentTab } from '@elastic/eui';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Notebook, NotebookProps } from './notebook';
 import { NoteTable, NoteTableProps } from './note_table';
@@ -12,26 +12,12 @@ type InvestigationTabsProps = NotebookProps & NoteTableProps;
 
 export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
   const [clickNotebook, setClickNotebook] = useState(false);
-  const tabs: EuiTabbedContentTab[] = useMemo(
-    () => {
-      return [
+  const tabs: EuiTabbedContentTab[] = useMemo(() => {
+    return [
       {
         id: 'chat',
         name: 'Chat',
-        content: (
-          <Notebook
-            pplService={props.pplService}
-            openedNoteId={props.openedNoteId}
-            setOpenedNoteId={props.setOpenedNoteId}
-            DashboardContainerByValueRenderer={props.DashboardContainerByValueRenderer}
-            http={props.http}
-            createNotebook={props.createNotebook}
-            renameNotebook={props.renameNotebook}
-            cloneNotebook={props.cloneNotebook}
-            deleteNotebook={props.deleteNotebook}
-            setToast={props.setToast}
-          />
-        ),
+        content: <Notebook {...props} />,
       },
       {
         id: 'compose',
@@ -47,18 +33,21 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
         id: 'history',
         name: 'History',
         content: (
-          <NoteTable
-            {...props}
-            setOpenedNoteId={(openedNoteId) => {
-              props.setOpenedNoteId(openedNoteId);
-              setClickNotebook(!clickNotebook);
-            }}
-          />
+          <EuiPage className="investigations-glass">
+            <EuiPageBody component="div">
+              <NoteTable
+                {...props}
+                setOpenedNoteId={(openedNoteId) => {
+                  props.setOpenedNoteId(openedNoteId);
+                  setClickNotebook(!clickNotebook);
+                }}
+              />
+            </EuiPageBody>
+          </EuiPage>
         ),
       },
-    ]},
-    [clickNotebook, props.openedNoteId, props.notebooks]
-  );
+    ];
+  }, [clickNotebook, props.openedNoteId, props.notebooks]);
   const [selectedId, setSelectedId] = useState(tabs[0].id);
 
   useEffect(() => {
