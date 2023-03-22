@@ -41,7 +41,7 @@ export const InvestigationTabs: React.FC<InvestigationTabsProps> = (props) => {
         />
       ),
     },
-  ]), [clickNotebook]);
+  ]), [clickNotebook, props.openedNoteId, props.notebooks]);
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
   useEffect(() => {
