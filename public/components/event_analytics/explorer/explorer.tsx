@@ -918,6 +918,8 @@ export const Explorer = ({
       }
     } else {
       if (isTabHasObjID && isObjTypeMatchVis) {
+        console.log('❗isTabHasObjID:', isTabHasObjID);
+        console.log('❗isObjTypeMatchVis:', isObjTypeMatchVis);
         soClient = new SaveAsCurrentVisualization(
           { tabId, history, notifications, showPermissionErrorToast },
           { batch, dispatch, changeQuery, updateTabName },
@@ -933,6 +935,8 @@ export const Explorer = ({
           }
         );
       } else {
+        console.log('❗else isTabHasObjID:', isTabHasObjID);
+        console.log('❗else isObjTypeMatchVis:', isObjTypeMatchVis);
         soClient = new SaveAsNewVisualization(
           {
             tabId,

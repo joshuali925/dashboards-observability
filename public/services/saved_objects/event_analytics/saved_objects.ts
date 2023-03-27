@@ -3,21 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { has, isEmpty, isArray } from 'lodash';
 import { IField } from 'common/types/explorer';
-import { has, isArray, isEmpty } from 'lodash';
-import { HttpStart, SavedObjectsClientContract } from '../../../../../../src/core/public';
-import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
 import {
-  EVENT_ANALYTICS,
   OBSERVABILITY_BASE,
+  EVENT_ANALYTICS,
   SAVED_OBJECTS,
   SAVED_QUERY,
   SAVED_VISUALIZATION,
 } from '../../../../common/constants/shared';
-import {
-  VisualizationSavedObjectAttributes,
-  VISUALIZATION_SAVED_OBJECT,
-} from '../../../../common/types/observability_saved_object_attributes';
+import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
+import { HttpStart, SavedObjectsClientContract } from '../../../../../../src/core/public';
 
 const CONCAT_FIELDS = ['objectIdList', 'objectType'];
 
@@ -125,50 +121,17 @@ export default class SavedObjects {
   }
 
   async fetchSavedObjects(params: ISavedObjectRequestParams) {
-    if (params.objectId) {
-      const o = await this.savedObjectsClient.get<VisualizationSavedObjectAttributes>(
-        VISUALIZATION_SAVED_OBJECT,
-        params.objectId
-      );
-      return {
-        observabilityObjectList: [
-          {
-            objectId: o.id,
-            savedVisualization: o.attributes.savedVisualization,
-            lastUpdatedTimeMs: o.updated_at,
-          },
-        ],
-      };
-    }
-
     // turn array into string. exmaple objectType ['savedQuery', 'savedVisualization'] =>
     // 'savedQuery,savedVisualization'
-    /* CONCAT_FIELDS.map((arrayField) => {
+    CONCAT_FIELDS.map((arrayField) => {
       this.stringifyList(params, arrayField, ',');
-    }); */
+    });
 
-    const list = await this.savedObjectsClient
-      .find<VisualizationSavedObjectAttributes>({
-        type: VISUALIZATION_SAVED_OBJECT,
-      })
-      .then((findRes) =>
-        findRes.savedObjects.map((o) => ({
-          objectId: o.id,
-          savedVisualization: o.attributes.savedVisualization,
-          lastUpdatedTimeMs: o.updated_at,
-        }))
-      );
-
-    const res = await this.http.get(`${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}`, {
+    return await this.http.get(`${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}`, {
       query: {
         ...params,
       },
     });
-    return { observabilityObjectList: list };
-  }
-
-  async getSavedObjectById(id: string) {
-    this.savedObjectsClient.get;
   }
 
   async fetchCustomPanels() {
@@ -208,24 +171,12 @@ export default class SavedObjects {
 
     finalParams.object_id = params.objectId;
 
-    const res = await this.savedObjectsClient.update<VisualizationSavedObjectAttributes>(
-      VISUALIZATION_SAVED_OBJECT,
-      params.objectId,
-      {
-        title: params.name,
-        description: params.description,
-        version: 1,
-        savedVisualization: finalParams.object,
-      }
-    );
-    return { objectId: res.id };
-
-    /* return await this.http.put(
+    return await this.http.put(
       `${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}${SAVED_VISUALIZATION}`,
       {
         body: JSON.stringify(finalParams),
       }
-    ); */
+    );
   }
 
   async updateSavedQueryById(params: any) {
@@ -257,16 +208,16 @@ export default class SavedObjects {
       timestamp: params.timestamp,
     });
 
-    const res = await this.http.post(
+    return await this.http.post(
       `${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}${SAVED_QUERY}`,
       {
         body: JSON.stringify(finalParams),
       }
     );
-    return res;
   }
 
   async createSavedVisualization(params: any) {
+    console.log('❗params:', params);
     const finalParams = this.buildRequestBody({
       query: params.query,
       fields: params.fields,
@@ -281,27 +232,16 @@ export default class SavedObjects {
       unitsOfMeasure: params.unitsOfMeasure,
       selectedLabels: params.selectedLabels,
     });
-    const res = await this.savedObjectsClient.create<VisualizationSavedObjectAttributes>(
-      VISUALIZATION_SAVED_OBJECT,
-      {
-        title: params.name,
-        description: params.description,
-        version: 1,
-        savedVisualization: finalParams.object,
-      }
-    );
-    return { objectId: res.id };
 
-    /* return await this.http.post(
+    return await this.http.post(
       `${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}${SAVED_VISUALIZATION}`,
       {
         body: JSON.stringify(finalParams),
       }
-    ); */
+    );
   }
 
   async deleteSavedObjectsList(deleteObjectRequest: any) {
-    deleteObjectRequest.objectIdList.map((id) => this.savedObjectsClient.delete(VISUALIZATION_SAVED_OBJECT, id));
     return await this.http.delete(
       `${OBSERVABILITY_BASE}${EVENT_ANALYTICS}${SAVED_OBJECTS}/${deleteObjectRequest.objectIdList.join(
         ','

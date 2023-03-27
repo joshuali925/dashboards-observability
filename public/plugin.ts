@@ -105,7 +105,7 @@ export class ObservabilityPlugin
           toListItem: ({ id, attributes, updated_at: updatedAt }) => ({
             description: attributes?.description,
             editApp: observabilityID,
-            editUrl: `${encodeURIComponent(id)}`,
+            editUrl: `#/event_analytics/explorer/${encodeURIComponent(id)}`,
             icon: 'pencil',
             id,
             savedObjectType: VISUALIZATION_SAVED_OBJECT,
