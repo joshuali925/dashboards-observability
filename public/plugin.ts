@@ -11,6 +11,7 @@ import {
   observabilityTitle,
 } from '../common/constants/shared';
 import { QueryManager } from '../common/query_manager';
+import { VISUALIZATION_SAVED_OBJECT } from '../common/types/observability_saved_object_attributes';
 import { setPPLService, uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
@@ -89,6 +90,33 @@ export class ObservabilityPlugin
       overlays: (await core.getStartServices())[0].overlays,
     }));
     setupDeps.embeddable.registerEmbeddableFactory(OBSERVABILITY_EMBEDDABLE, embeddableFactory);
+
+    setupDeps.visualizations.registerAlias({
+      name: observabilityID,
+      title: observabilityTitle,
+      description: 'create a visualization with Piped processigng language',
+      icon: 'pencil',
+      aliasApp: observabilityID,
+      aliasPath: '#/event_analytics/explorer',
+      stage: 'production',
+      appExtensions: {
+        visualizations: {
+          docTypes: [VISUALIZATION_SAVED_OBJECT],
+          toListItem: ({ id, attributes, updated_at: updatedAt }) => ({
+            description: attributes?.description,
+            editApp: observabilityID,
+            editUrl: `${encodeURIComponent(id)}`,
+            icon: 'pencil',
+            id,
+            savedObjectType: VISUALIZATION_SAVED_OBJECT,
+            title: attributes?.title,
+            typeTitle: observabilityTitle,
+            stage: 'production',
+            updated_at: updatedAt,
+          }),
+        },
+      },
+    });
 
     // Return methods that should be available to other plugins
     return {};
