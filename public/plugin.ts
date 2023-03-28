@@ -12,7 +12,7 @@ import {
 } from '../common/constants/shared';
 import { QueryManager } from '../common/query_manager';
 import { VISUALIZATION_SAVED_OBJECT } from '../common/types/observability_saved_object_attributes';
-import { setPPLService, uiSettingsService } from '../common/utils';
+import { setPPLService, setSavedObjectsClient, uiSettingsService } from '../common/utils';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
 import { Traces } from './core_visualize/traces';
@@ -42,6 +42,9 @@ export class ObservabilityPlugin
     const pplService = new PPLService(core.http);
     const qm = new QueryManager();
     setPPLService(pplService);
+    core.getStartServices().then(([coreStart]) => {
+      setSavedObjectsClient(coreStart.savedObjects.client);
+    });
 
     // redirect legacy notebooks URL to current URL under observability
     if (window.location.pathname.includes('notebooks-dashboards')) {
@@ -68,6 +71,37 @@ export class ObservabilityPlugin
         const dslService = new DSLService(coreStart.http);
         const savedObjects = new SavedObjects(coreStart.http, coreStart.savedObjects.client);
         const timestampUtils = new TimestampUtils(dslService, pplService);
+        /* const client = new OSDSavedVisualizationClient(coreStart.savedObjects.client);
+        const response = await client.create({
+          query: 'source = opensearch_dashboards_sample_data_flights | stats count() by Carrier ',
+          fields: [],
+          dateRange: ['now-15m', 'now'],
+          name: 'aa',
+          timestamp: 'timestamp',
+          type: 'bar',
+          applicationId: '',
+          description: '',
+          subType: 'visualization',
+          selectedPanels: [],
+        });
+        const getR = await client.get({ objectId: '0b9162a0-cdb7-11ed-9dc9-d3aa8980826d' });
+        console.log('❗getR:', getR);
+        const updateResponse = await client.update({
+          objectId: '0b9162a0-cdb7-11ed-9dc9-d3aa8980826d',
+          query: 'source = opensearch_dashboards_sample_data_flights | stats count() by Carrier ',
+          fields: [],
+          dateRange: ['now-15m', 'now'],
+          name: 'aa2',
+          timestamp: 'timestamp',
+          type: 'bar',
+          userConfigs:
+            '{"dataConfig":{"series":[{"label":"","name":"","aggregation":"count","customLabel":""}],"dimensions":[{"label":"Carrier","name":"Carrier","customLabel":""}]}}',
+          description: '',
+          subType: 'visualization',
+        });
+        console.log('❗updateResponse:', updateResponse);
+        const getR2 = await client.get({ objectId: '0b9162a0-cdb7-11ed-9dc9-d3aa8980826d' });
+        console.log('❗getR2:', getR2); */
         return Observability(
           coreStart,
           depsStart,

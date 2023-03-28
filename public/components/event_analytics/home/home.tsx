@@ -48,8 +48,6 @@ import {
   EmptyTabParams,
   ExplorerData as IExplorerData,
   IQuery,
-  SavedQueryRes,
-  SavedVizRes,
 } from '../../../../common/types/explorer';
 import { HttpStart } from '../../../../../../src/core/public';
 import SavedObjects from '../../../services/saved_objects/event_analytics/saved_objects';
@@ -64,6 +62,9 @@ import { setSelectedQueryTab } from '../redux/slices/query_tab_slice';
 import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
 import { getSampleDataModal } from '../../common/helpers/add_sample_modal';
 import { parseGetSuggestions, onItemSelect } from '../../common/search/autocomplete_logic';
+import { ObservabilitySavedObject } from '../../../services/saved_objects/saved_object_client/osd_saved_objects/types';
+import { getSavedObjectsClient } from '../../../../common/utils';
+import { OSDSavedVisualizationClient } from '../../../services/saved_objects/saved_object_client/osd_saved_objects/saved_visualization';
 
 interface IHomeProps {
   pplService: any;
@@ -116,13 +117,14 @@ const EventAnalyticsHome = (props: IHomeProps) => {
   };
 
   const fetchHistories = async () => {
-    const res = await savedObjects.fetchSavedObjects({
-      objectType: ['savedQuery', 'savedVisualization'],
-      sortOrder: 'desc',
-      fromIndex: 0,
-    });
+    // const orig = await savedObjects.fetchSavedObjects({
+    //   objectType: ['savedQuery', 'savedVisualization'],
+    //   sortOrder: 'desc',
+    //   fromIndex: 0,
+    // });
+    const res = await new OSDSavedVisualizationClient(getSavedObjectsClient()).getBulk([]);
     const nonAppObjects = res.observabilityObjectList.filter(
-      (object: SavedQueryRes | SavedVizRes) =>
+      (object: ObservabilitySavedObject) =>
         (object.savedVisualization && !object.savedVisualization.application_id) ||
         object.savedQuery
     );

@@ -26,13 +26,13 @@ interface SavedObjectVisualizationProps {
  * Renders a visualization from a {@link SavedVisualization}.
  */
 export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> = (props) => {
-  console.log('❗props:', props);
+  console.log('❗SavedObjectVisualization props:', props);
   const [visContainerProps, setVisContainerProps] = useState<IVisualizationContainerProps>();
 
   useEffect(() => {
     const pplService = getPPLService();
     const metaData = { ...props.savedVisualization, query: props.savedVisualization.query };
-    const userConfigs = JSON.parse(metaData.user_configs);
+    const userConfigs = metaData.user_configs ? JSON.parse(metaData.user_configs) : {};
     const dataConfig = { ...(userConfigs.dataConfig || {}) };
     const hasBreakdowns = !_.isEmpty(dataConfig.breakdowns);
     const realTimeParsedStats = {
@@ -82,7 +82,7 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
     }
 
     pplService
-      .fetch({ query, format: 'viz' })
+      .fetch({ query, format: 'jdbc' })
       .then((data) => {
         console.log('❗data:', data);
         const container = getVizContainerProps({
@@ -91,7 +91,7 @@ export const SavedObjectVisualization: React.FC<SavedObjectVisualizationProps> =
           query: { rawQuery: metaData.query },
           indexFields: {},
           userConfigs: mixedUserConfigs,
-          explorer: { explorerData: data, explorerFields: data.metadata.fields },
+          explorer: { explorerData: data, explorerFields: data.schema },
         });
         setVisContainerProps(container);
       })

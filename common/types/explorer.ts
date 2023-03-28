@@ -165,22 +165,6 @@ export interface SavedVisualization extends SavedObjectAttributes {
   application_id?: string;
 }
 
-export interface SavedQueryRes {
-  createdTimeMs: number;
-  lastUpdatedTimeMs: number;
-  objectId: string;
-  savedQuery: SavedQuery;
-  tenant: string;
-}
-
-export interface SavedVizRes {
-  createdTimeMs: number;
-  lastUpdatedTimeMs: number;
-  objectId: string;
-  savedVisualization: SavedVisualization;
-  tenant: string;
-}
-
 export interface ExplorerDataType {
   jsonData: object[];
   jsonDataAll: object[];

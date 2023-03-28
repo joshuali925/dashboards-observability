@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IUiSettingsClient, NotificationsStart, ToastInput } from '../../../../src/core/public';
+import { IUiSettingsClient, NotificationsStart, SavedObjectsClientContract, ToastInput } from '../../../../src/core/public';
 import { createGetterSetter } from '../../../../src/plugins/opensearch_dashboards_utils/common';
 import PPLService from '../../public/services/requests/ppl';
 import { QueryManager } from '../query_manager';
@@ -28,4 +28,5 @@ export const uiSettingsService = {
 };
 
 export const [getPPLService, setPPLService] = createGetterSetter<PPLService>('PPLService');
+export const [getSavedObjectsClient, setSavedObjectsClient] = createGetterSetter<SavedObjectsClientContract>('SavedObjectsClient');
 export const [getQueryManager, setQueryManager] = createGetterSetter<QueryManager>('QueryManager');

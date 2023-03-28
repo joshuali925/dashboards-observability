@@ -68,6 +68,7 @@ import {
   buildQuery,
   composeFinalQuery,
   getIndexPatternFromRawQuery,
+  getSavedObjectsClient,
 } from '../../../../common/utils';
 import { sleep } from '../../common/live_tail/live_tail_button';
 import { onItemSelect, parseGetSuggestions } from '../../common/search/autocomplete_logic';
@@ -109,6 +110,7 @@ import {
   SaveAsCurrentVisualization,
   SaveAsNewVisualization,
 } from '../../../services/saved_objects/saved_object_savers';
+import { OSDSavedVisualizationClient } from '../../../services/saved_objects/saved_object_client/osd_saved_objects/saved_visualization';
 
 export const Explorer = ({
   pplService,
@@ -251,12 +253,15 @@ export const Explorer = ({
 
   const getSavedDataById = async (objectId: string) => {
     // load saved query/visualization if object id exists
-    await savedObjects
-      .fetchSavedObjects({
-        objectId,
-      })
+    await new OSDSavedVisualizationClient(getSavedObjectsClient()).get({objectId})
+    // await savedObjects
+      // .fetchSavedObjects({
+      //   objectId,
+      // })
       .then(async (res) => {
+        console.log('❗get saved data by id res:', res);
         const savedData = res.observabilityObjectList[0];
+        console.log('❗savedData:', savedData);
         const isSavedQuery = has(savedData, SAVED_QUERY);
         const savedType = isSavedQuery ? SAVED_QUERY : SAVED_VISUALIZATION;
         const objectData = isSavedQuery ? savedData.savedQuery : savedData.savedVisualization;
@@ -920,10 +925,19 @@ export const Explorer = ({
       if (isTabHasObjID && isObjTypeMatchVis) {
         console.log('❗isTabHasObjID:', isTabHasObjID);
         console.log('❗isObjTypeMatchVis:', isObjTypeMatchVis);
+        console.log('❗save params:', {
+            ...commonParams,
+            objectId: query[SAVED_OBJECT_ID],
+            type: curVisId,
+            userConfigs: JSON.stringify(userVizConfigs[curVisId]),
+            description: userVizConfigs[curVisId]?.dataConfig?.panelOptions?.description || '',
+            subType,
+        });
         soClient = new SaveAsCurrentVisualization(
           { tabId, history, notifications, showPermissionErrorToast },
           { batch, dispatch, changeQuery, updateTabName },
-          new PPLSavedVisualizationClient(http),
+          // new PPLSavedVisualizationClient(http),
+          new OSDSavedVisualizationClient(getSavedObjectsClient()),
           new PanelSavedObjectClient(http),
           {
             ...commonParams,
@@ -937,6 +951,15 @@ export const Explorer = ({
       } else {
         console.log('❗else isTabHasObjID:', isTabHasObjID);
         console.log('❗else isObjTypeMatchVis:', isObjTypeMatchVis);
+        console.log('❗else save params:', {
+            ...commonParams,
+            type: curVisId,
+            applicationId: appId,
+            userConfigs: JSON.stringify(userVizConfigs[curVisId]),
+            description: userVizConfigs[curVisId]?.dataConfig?.panelOptions?.description || '',
+            subType,
+            selectedPanels: selectedCustomPanelOptions,
+        });
         soClient = new SaveAsNewVisualization(
           {
             tabId,
@@ -947,7 +970,8 @@ export const Explorer = ({
             addVisualizationToPanel,
           },
           { batch, dispatch, changeQuery, updateTabName },
-          new PPLSavedVisualizationClient(http),
+          // new PPLSavedVisualizationClient(http),
+          new OSDSavedVisualizationClient(getSavedObjectsClient()),
           new PanelSavedObjectClient(http),
           {
             ...commonParams,

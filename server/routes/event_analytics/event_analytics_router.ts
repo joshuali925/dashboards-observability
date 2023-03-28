@@ -230,7 +230,7 @@ export const registerEventAnalyticsRouter = ({
             name: schema.string(),
             description: schema.string(),
             application_id: schema.maybe(schema.string()),
-            user_configs: schema.string(),
+            user_configs: schema.maybe(schema.string()),
             sub_type: schema.string(),
             units_of_measure: schema.maybe(schema.string()),
             selected_labels: schema.maybe(schema.object({

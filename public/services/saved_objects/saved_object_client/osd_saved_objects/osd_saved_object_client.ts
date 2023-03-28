@@ -4,21 +4,24 @@
  */
 
 import { isEmpty } from 'lodash';
+import {
+  SavedObjectsClientContract,
+  SimpleSavedObject,
+} from '../../../../../../../src/core/public';
 import { SavedObjectClientBase } from '../client_base';
-import { ISavedObjectsClient } from '../client_interface';
-import { HttpStart, SavedObjectsClientContract } from '../../../../../../../src/core/public';
+import { SavedObjectsGetResponse, SavedObjectsCreateResponse } from '../types';
 
-export class OSDSavedObjectClient extends SavedObjectClientBase implements ISavedObjectsClient {
+export class OSDSavedObjectClient extends SavedObjectClientBase {
   constructor(protected readonly client: SavedObjectsClientContract) {
     super();
   }
-  create(params: unknown): Promise<unknown> {
+  create(params: unknown): Promise<SavedObjectsCreateResponse> {
     throw new Error('Method not implemented.');
   }
-  get(params: unknown): Promise<unknown> {
+  get(params: unknown): Promise<SavedObjectsGetResponse> {
     throw new Error('Method not implemented.');
   }
-  getBulk(params: unknown): Promise<Array<Promise<unknown>>> {
+  getBulk(params: unknown): Promise<SavedObjectsGetResponse> {
     throw new Error('Method not implemented.');
   }
   update(params: unknown): Promise<unknown> {
@@ -30,8 +33,11 @@ export class OSDSavedObjectClient extends SavedObjectClientBase implements ISave
   delete(params: unknown): Promise<unknown> {
     throw new Error('Method not implemented.');
   }
-  deleteBulk(params: unknown): Promise<Array<Promise<unknown>>> {
+  deleteBulk(params: unknown): Promise<unknown> {
     throw new Error('Method not implemented.');
+  }
+  convertToLastUpdatedMs(updatedAt: SimpleSavedObject['updated_at']) {
+    return (updatedAt ? new Date(updatedAt) : new Date()).getTime();
   }
   buildRequestBody({
     query,
