@@ -10,7 +10,7 @@ export interface ISavedObjectsClient {
   get: (params: any) => Promise<SavedObjectsGetResponse>;
   getBulk: (params: any) => Promise<SavedObjectsGetResponse>;
   update: (params: any) => Promise<any>;
-  updateBulk: (params: any) => Promise<Array<Promise<any>>>;
+  updateBulk: (params: any) => Promise<unknown>;
   delete: (params: any) => Promise<any>;
-  deleteBulk: (params: any) => Promise<Array<Promise<any>>>;
+  deleteBulk: (params: any) => Promise<unknown>;
 }

@@ -9,6 +9,7 @@ module.exports = {
     '@elastic/eslint-config-kibana',
     'plugin:@elastic/eui/recommended',
     'plugin:react-hooks/recommended',
+    'prettier',
   ],
   overrides: [
     {

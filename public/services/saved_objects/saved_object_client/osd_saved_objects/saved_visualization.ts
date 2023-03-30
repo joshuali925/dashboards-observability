@@ -3,7 +3,6 @@ import { SavedObjectsFindOptions } from '../../../../../../../src/core/public';
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { IField } from '../../../../../common/types/explorer';
 import {
   SAVED_OBJECT_VERSION,
@@ -34,10 +33,6 @@ type UpdateParams = Partial<CommonParams> & { objectId: string };
 
 interface GetParams {
   objectId: string;
-}
-
-interface GetParams {
-  objectIdList: string[];
 }
 
 export class OSDSavedVisualizationClient extends OSDSavedObjectClient {
@@ -147,11 +142,11 @@ export class OSDSavedVisualizationClient extends OSDSavedObjectClient {
     return { observabilityObjectList };
   }
 
-  async delete(params: {objectId: string}): Promise<unknown> {
+  async delete(params: { objectId: string }): Promise<unknown> {
     return this.client.delete(VISUALIZATION_SAVED_OBJECT, params.objectId);
   }
 
-  async deleteBulk(params: {objectIdList: string[]}): Promise<unknown> {
+  async deleteBulk(params: { objectIdList: string[] }): Promise<unknown> {
     return params.objectIdList.map((id) => this.client.delete(VISUALIZATION_SAVED_OBJECT, id));
   }
 }

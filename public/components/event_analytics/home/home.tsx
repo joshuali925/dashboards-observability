@@ -3,45 +3,45 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, ReactElement, useRef, useEffect } from 'react';
-import { useDispatch, batch, connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import {
-  EuiPage,
-  EuiPageBody,
-  EuiPageHeader,
-  EuiPageHeaderSection,
-  EuiTitle,
-  EuiPageContent,
-  EuiSpacer,
+  EuiButton,
+  EuiContextMenuItem,
+  EuiContextMenuPanel,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiButton,
-  EuiPopover,
-  EuiContextMenuPanel,
-  EuiContextMenuItem,
-  EuiOverlayMask,
+  EuiHorizontalRule,
   EuiLink,
+  EuiOverlayMask,
+  EuiPage,
+  EuiPageBody,
+  EuiPageContent,
   EuiPageContentHeader,
   EuiPageContentHeaderSection,
+  EuiPageHeader,
+  EuiPageHeaderSection,
+  EuiPopover,
+  EuiSpacer,
   EuiText,
-  EuiHorizontalRule,
+  EuiTitle,
   htmlIdGenerator,
 } from '@elastic/eui';
-import { DeleteModal } from '../../common/helpers/delete_modal';
-import { Search } from '../../common/search/search';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import { batch, connect, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { HttpStart } from '../../../../../../src/core/public';
+import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
 import {
-  RAW_QUERY,
-  TAB_ID_TXT_PFX,
-  SELECTED_DATE_RANGE,
   EVENT_ANALYTICS_DOCUMENTATION_URL,
-  TAB_CREATED_TYPE,
   NEW_TAB,
+  RAW_QUERY,
   REDIRECT_TAB,
+  SELECTED_DATE_RANGE,
+  TAB_CREATED_TYPE,
+  TAB_ID_TXT_PFX,
 } from '../../../../common/constants/explorer';
 import {
-  OBSERVABILITY_BASE,
   EVENT_ANALYTICS,
+  OBSERVABILITY_BASE,
   SAVED_OBJECTS,
 } from '../../../../common/constants/shared';
 import {
@@ -49,22 +49,20 @@ import {
   ExplorerData as IExplorerData,
   IQuery,
 } from '../../../../common/types/explorer';
-import { HttpStart } from '../../../../../../src/core/public';
-import SavedObjects from '../../../services/saved_objects/event_analytics/saved_objects';
-import { addTab, selectQueryTabs } from '../redux/slices/query_tab_slice';
-import { init as initFields } from '../redux/slices/field_slice';
-import { init as initQuery, changeQuery } from '../redux/slices/query_slice';
-import { init as initQueryResult, selectQueryResult } from '../redux/slices/query_result_slice';
-import { init as initPatterns } from '../redux/slices/patterns_slice';
-import { SavedQueryTable } from './saved_objects_table';
-import { selectQueries } from '../redux/slices/query_slice';
-import { setSelectedQueryTab } from '../redux/slices/query_tab_slice';
-import { CUSTOM_PANELS_API_PREFIX } from '../../../../common/constants/custom_panels';
-import { getSampleDataModal } from '../../common/helpers/add_sample_modal';
-import { parseGetSuggestions, onItemSelect } from '../../common/search/autocomplete_logic';
-import { ObservabilitySavedObject } from '../../../services/saved_objects/saved_object_client/osd_saved_objects/types';
 import { getSavedObjectsClient } from '../../../../common/utils';
+import SavedObjects from '../../../services/saved_objects/event_analytics/saved_objects';
 import { OSDSavedVisualizationClient } from '../../../services/saved_objects/saved_object_client/osd_saved_objects/saved_visualization';
+import { ObservabilitySavedObject } from '../../../services/saved_objects/saved_object_client/types';
+import { getSampleDataModal } from '../../common/helpers/add_sample_modal';
+import { DeleteModal } from '../../common/helpers/delete_modal';
+import { onItemSelect, parseGetSuggestions } from '../../common/search/autocomplete_logic';
+import { Search } from '../../common/search/search';
+import { init as initFields } from '../redux/slices/field_slice';
+import { init as initPatterns } from '../redux/slices/patterns_slice';
+import { init as initQueryResult, selectQueryResult } from '../redux/slices/query_result_slice';
+import { changeQuery, init as initQuery, selectQueries } from '../redux/slices/query_slice';
+import { addTab, selectQueryTabs, setSelectedQueryTab } from '../redux/slices/query_tab_slice';
+import { SavedQueryTable } from './saved_objects_table';
 
 interface IHomeProps {
   pplService: any;
@@ -117,13 +115,17 @@ const EventAnalyticsHome = (props: IHomeProps) => {
   };
 
   const fetchHistories = async () => {
-    // const orig = await savedObjects.fetchSavedObjects({
-    //   objectType: ['savedQuery', 'savedVisualization'],
-    //   sortOrder: 'desc',
-    //   fromIndex: 0,
-    // });
-    const res = await new OSDSavedVisualizationClient(getSavedObjectsClient()).getBulk([]);
-    const nonAppObjects = res.observabilityObjectList.filter(
+    const observabilityObjects = await savedObjects.fetchSavedObjects({
+      objectType: ['savedQuery', 'savedVisualization'],
+      sortOrder: 'desc',
+      fromIndex: 0,
+    });
+    const osdObjects = await new OSDSavedVisualizationClient(getSavedObjectsClient()).getBulk([]);
+    observabilityObjects.observabilityObjectList = [
+      ...observabilityObjects.observabilityObjectList,
+      ...osdObjects.observabilityObjectList,
+    ];
+    const nonAppObjects = observabilityObjects.observabilityObjectList.filter(
       (object: ObservabilitySavedObject) =>
         (object.savedVisualization && !object.savedVisualization.application_id) ||
         object.savedQuery

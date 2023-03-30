@@ -55,6 +55,7 @@ import {
   PPL_NEWLINE_REGEX,
   PPL_STATS_REGEX,
 } from '../../../../common/constants/shared';
+import { QueryManager } from '../../../../common/query_manager';
 import {
   IDefaultTimestampState,
   IExplorerFields,
@@ -69,7 +70,19 @@ import {
   composeFinalQuery,
   getIndexPatternFromRawQuery,
   getSavedObjectsClient,
+  uiSettingsService,
 } from '../../../../common/utils';
+import { OSDSavedVisualizationClient } from '../../../services/saved_objects/saved_object_client/osd_saved_objects/saved_visualization';
+import {
+  PanelSavedObjectClient,
+  PPLSavedQueryClient,
+} from '../../../services/saved_objects/saved_object_client/ppl';
+import {
+  SaveAsCurrenQuery,
+  SaveAsCurrentVisualization,
+  SaveAsNewVisualization,
+} from '../../../services/saved_objects/saved_object_savers';
+import { SaveAsNewQuery } from '../../../services/saved_objects/saved_object_savers/ppl/save_as_new_query';
 import { sleep } from '../../common/live_tail/live_tail_button';
 import { onItemSelect, parseGetSuggestions } from '../../common/search/autocomplete_logic';
 import { Search } from '../../common/search/search';
@@ -88,29 +101,15 @@ import {
   selectVisualizationConfig,
 } from '../redux/slices/viualization_config_slice';
 import { formatError, getDefaultVisConfig } from '../utils';
+import { getContentTabTitle, getDateRange } from '../utils/utils';
 import { DataGrid } from './events_views/data_grid';
 import { HitsCounter } from './hits_counter/hits_counter';
+import { LogPatterns } from './log_patterns/log_patterns';
 import { NoResults } from './no_results';
 import { Sidebar } from './sidebar';
 import { TimechartHeader } from './timechart_header';
 import { ExplorerVisualizations } from './visualizations';
 import { CountDistribution } from './visualizations/count_distribution';
-import { QueryManager } from '../../../../common/query_manager';
-import { uiSettingsService } from '../../../../common/utils';
-import { LogPatterns } from './log_patterns/log_patterns';
-import { getContentTabTitle, getDateRange } from '../utils/utils';
-import {
-  PPLSavedQueryClient,
-  PPLSavedVisualizationClient,
-  PanelSavedObjectClient,
-} from '../../../services/saved_objects/saved_object_client/ppl';
-import { SaveAsNewQuery } from '../../../services/saved_objects/saved_object_savers/ppl/save_as_new_query';
-import {
-  SaveAsCurrenQuery,
-  SaveAsCurrentVisualization,
-  SaveAsNewVisualization,
-} from '../../../services/saved_objects/saved_object_savers';
-import { OSDSavedVisualizationClient } from '../../../services/saved_objects/saved_object_client/osd_saved_objects/saved_visualization';
 
 export const Explorer = ({
   pplService,
@@ -253,8 +252,9 @@ export const Explorer = ({
 
   const getSavedDataById = async (objectId: string) => {
     // load saved query/visualization if object id exists
-    await new OSDSavedVisualizationClient(getSavedObjectsClient()).get({objectId})
-    // await savedObjects
+    await new OSDSavedVisualizationClient(getSavedObjectsClient())
+      .get({ objectId })
+      // await savedObjects
       // .fetchSavedObjects({
       //   objectId,
       // })
@@ -926,12 +926,12 @@ export const Explorer = ({
         console.log('❗isTabHasObjID:', isTabHasObjID);
         console.log('❗isObjTypeMatchVis:', isObjTypeMatchVis);
         console.log('❗save params:', {
-            ...commonParams,
-            objectId: query[SAVED_OBJECT_ID],
-            type: curVisId,
-            userConfigs: JSON.stringify(userVizConfigs[curVisId]),
-            description: userVizConfigs[curVisId]?.dataConfig?.panelOptions?.description || '',
-            subType,
+          ...commonParams,
+          objectId: query[SAVED_OBJECT_ID],
+          type: curVisId,
+          userConfigs: JSON.stringify(userVizConfigs[curVisId]),
+          description: userVizConfigs[curVisId]?.dataConfig?.panelOptions?.description || '',
+          subType,
         });
         soClient = new SaveAsCurrentVisualization(
           { tabId, history, notifications, showPermissionErrorToast },
@@ -952,13 +952,13 @@ export const Explorer = ({
         console.log('❗else isTabHasObjID:', isTabHasObjID);
         console.log('❗else isObjTypeMatchVis:', isObjTypeMatchVis);
         console.log('❗else save params:', {
-            ...commonParams,
-            type: curVisId,
-            applicationId: appId,
-            userConfigs: JSON.stringify(userVizConfigs[curVisId]),
-            description: userVizConfigs[curVisId]?.dataConfig?.panelOptions?.description || '',
-            subType,
-            selectedPanels: selectedCustomPanelOptions,
+          ...commonParams,
+          type: curVisId,
+          applicationId: appId,
+          userConfigs: JSON.stringify(userVizConfigs[curVisId]),
+          description: userVizConfigs[curVisId]?.dataConfig?.panelOptions?.description || '',
+          subType,
+          selectedPanels: selectedCustomPanelOptions,
         });
         soClient = new SaveAsNewVisualization(
           {
@@ -1002,7 +1002,7 @@ export const Explorer = ({
     delayTime: number
   ) => {
     setLiveTailName(name);
-    setLiveTailTabId((curSelectedTabId.current as unknown) as string);
+    setLiveTailTabId(curSelectedTabId.current as unknown as string);
     setIsLiveTailOn(true);
     setToast('Live tail On', 'success');
     setIsLiveTailPopoverOpen(false);
