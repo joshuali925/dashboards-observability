@@ -27,7 +27,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = (props) => {
                 style={{ backgroundColor: '#3a71e2' }}
               >
                 <EuiText color="ghost" style={{ whiteSpace: 'pre-line' }}>
-                  <div style={{ width: '100%', maxWidth: '500px' }}>{props.output}</div>
+                  <div style={{ width: '100%', maxWidth: '500px' }}>{props.input}</div>
                 </EuiText>
               </EuiPanel>
             </EuiFlexItem>

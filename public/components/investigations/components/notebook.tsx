@@ -801,7 +801,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
             </EuiFlexGroup> */}
 
             <>
-              <ChatBubble output="Hello I'm an Observability AI assistance - how can I help you today?" />
+              <ChatBubble output="Hello I'm an Observability AI assistant - how can I help you today?" />
               {this.state.parsedPara.map((para: ParaType, index: number) => (
                 <div
                   ref={this.state.parsedPara[index].paraDivRef}
