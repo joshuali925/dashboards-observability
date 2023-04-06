@@ -27,7 +27,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = (props) => {
                 style={{ backgroundColor: '#3a71e2' }}
               >
                 <EuiText color="ghost" style={{ whiteSpace: 'pre-line' }}>
-                  {props.input}
+                  <div style={{ width: '100%', maxWidth: '500px' }}>{props.output}</div>
                 </EuiText>
               </EuiPanel>
             </EuiFlexItem>
@@ -46,7 +46,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = (props) => {
                 hasBorder
                 className="investigations-chat-dialog"
               >
-                {props.output}
+                <div style={{ width: '100%', maxWidth: '500px' }}>{props.output}</div>
               </EuiPanel>
             </EuiFlexItem>
           </EuiFlexGroup>

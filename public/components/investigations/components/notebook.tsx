@@ -327,7 +327,7 @@ export class Notebook extends Component<NotebookProps, NotebookState> {
       inputType: inpType,
     };
     if (this.props.openedNoteId.length === 0) {
-      const noteId = await this.props.createNotebook(newParaContent.substring(5, 55));
+      const noteId = await this.props.createNotebook(newParaContent.substring(5, 54));
       await this.props.setOpenedNoteId(noteId);
       addParaObj.noteId = noteId;
     }
