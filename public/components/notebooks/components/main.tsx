@@ -309,7 +309,7 @@ export class Main extends React.Component<MainProps, MainState> {
           <Switch>
             <Route
               exact
-              path={['/notebooks/create', '/notebooks']}
+              path={['/create', '/']}
               render={(props) => (
                 <NoteTable
                   loading={this.state.loading}
@@ -328,7 +328,7 @@ export class Main extends React.Component<MainProps, MainState> {
             />
             <Route
               exact
-              path="/notebooks/:id"
+              path="/:id"
               render={(props) => (
                 <Notebook
                   pplService={this.props.pplService}
