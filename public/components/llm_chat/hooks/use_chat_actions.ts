@@ -10,6 +10,7 @@ import {
   IMessage,
   ISuggestedAction,
 } from '../../../../common/types/observability_saved_object_attributes';
+import { coreRefs } from '../../../framework/core_refs';
 import { ChatContext, ChatStateContext, CoreServicesContext } from '../chat_header_button';
 
 interface SendResponse {
@@ -35,6 +36,24 @@ export const useChatActions = () => {
       })
     );
     try {
+      if (coreRefs.handleLLMRequest) {
+        const response = await coreRefs.handleLLMRequest(input.content);
+        chatStateContext.setChatState({
+          llmError: undefined,
+          llmResponding: false,
+          messages: [
+            ...chatStateContext.chatState.messages,
+            input,
+            {
+              type: 'output',
+              contentType: 'markdown',
+              content: response,
+            },
+          ],
+          persisted: true,
+        });
+        return;
+      }
       const response = await coreServicesContext.http.post<SendResponse>(
         `${OBSERVABILITY_BASE}/chat/send`,
         {
@@ -70,21 +89,7 @@ export const useChatActions = () => {
     chatContext.setSelectedTabId('chat');
     chatStateContext.setChatState({
       llmResponding: false,
-      messages: [
-        {
-          content: `Hello, I'm the Observability assistant.\n\nHow may I help you?`,
-          contentType: 'markdown',
-          type: 'output',
-          suggestedActions: [
-            { message: 'Answer questions about my system', actionType: 'send_as_input' },
-            {
-              message:
-                "I'm noticing some issues in the error rate of a service, would you like to dive in?",
-              actionType: 'send_as_input',
-            },
-          ],
-        },
-      ],
+      messages: [],
       persisted: false,
     });
   };

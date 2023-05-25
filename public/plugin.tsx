@@ -251,7 +251,11 @@ export class ObservabilityPlugin
     coreRefs.savedObjectsClient = core.savedObjects.client;
     coreRefs.pplService = pplService;
 
-    return {};
+    return {
+      overrideRequestHandler: (handleLLMRequest: (input: string) => Promise<string>) => {
+        coreRefs.handleLLMRequest = handleLLMRequest;
+      },
+    };
   }
 
   public stop() {}

@@ -67,17 +67,7 @@ export const HeaderChatButton: React.FC<HeaderChatButtonProps> = (props) => {
   const [flyoutVisible, setFlyoutVisible] = useState(false);
   const [selectedTabId, setSelectedTabId] = useState<TabId>('chat');
   const [chatState, setChatState] = useState<ChatState>({
-    messages: [
-      {
-        content: `Hello, I'm the Observability assistant.\n\nHow may I help you?`,
-        contentType: 'markdown',
-        type: 'output',
-        suggestedActions: [
-          { message: 'Answer questions about my system', actionType: 'send_as_input' },
-          { message: 'Show me all services', actionType: 'send_as_input' },
-        ],
-      },
-    ],
+    messages: [],
     llmResponding: false,
     persisted: false,
   });

@@ -19,6 +19,7 @@ class CoreRefs {
   public http?: HttpStart;
   public savedObjectsClient?: SavedObjectsClientContract;
   public pplService?: PPLService;
+  public handleLLMRequest?: (input: string) => Promise<string>;
   private constructor() {
     // ...
   }
