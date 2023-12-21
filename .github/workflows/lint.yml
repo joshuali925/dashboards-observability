@@ -1,8 +1,6 @@
 name: Lint
 
-on: 
-  pull_request_target:
-    types: [opened, synchronize, reopened]
+on:  [push, pull_request]
 
 env:
   PLUGIN_NAME: dashboards-observability
@@ -51,15 +49,20 @@ jobs:
           yarn osd bootstrap
 
       - name: Checkout the head of the pull request
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-  
+      
       - name: Get list of changed files
         id: files
         run: |
-          git fetch origin ${{ github.base_ref }}
-          CHANGED_FILES=$(git diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD ${{ github.base_ref }}) | grep -E "\.(js|ts|tsx)$")
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin ${{ github.base_ref }}
+            CHANGED_FILES=$(git diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD ${{ github.base_ref }}) | grep -E "\.(js|ts|tsx)$")
+          else
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E "\.(js|ts|tsx)$")
+          fi
           echo "::set-output name=changed::${CHANGED_FILES}"
 
       - name: Lint Changed Files
