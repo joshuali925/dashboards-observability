@@ -1,6 +1,6 @@
 name: Lint
 
-on:  [pull_request]
+on: [pull_request]
 
 env:
   PLUGIN_NAME: dashboards-observability
@@ -45,9 +45,8 @@ jobs:
           npm i -g yarn@${{ steps.versions_step.outputs.yarn_version }}
 
       - name: Bootstrap the plugin
-        working-directory: OpenSearch-Dashboards/plugins/${{ env.PLUGIN_NAME }}  
-        run:
-          yarn osd bootstrap
+        working-directory: OpenSearch-Dashboards/plugins/${{ env.PLUGIN_NAME }}
+        run: yarn osd bootstrap
 
       - name: Checkout the head of the pull request
         if: github.event_name == 'pull_request'
@@ -55,24 +54,12 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
-      
+
       - name: Get list of changed files
-        id: files
         run: |
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          git fetch origin $BASE_SHA
-          git diff --name-only $BASE_SHA...$HEAD_SHA > changed_files.txt
-          CHANGED_FILES=$(cat changed_files.txt | grep -E '\.(js|ts|tsx)$')
-          echo "::set-output name=changed::${CHANGED_FILES}"
-        
-      - name: Lint Changed Files
-        run: |
-          CHANGED_FILES="${{ steps.files.outputs.changed }}"
+          CHANGED_FILES=($(git diff --name-only --diff-filter=d $BASE_SHA...$HEAD_SHA | grep -E '\.(js|ts|tsx)$'))
           if [ -n "$CHANGED_FILES" ]; then
-            echo "Linting changed files..."
-            yarn lint $CHANGED_FILES
-          else
-            echo "No JavaScript/TypeScript files to lint."
+            yarn lint "${CHANGED_FILES[@]}"
           fi
-        working-directory: OpenSearch-Dashboards/plugins/${{ env.PLUGIN_NAME }}
