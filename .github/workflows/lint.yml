@@ -57,13 +57,18 @@ jobs:
       - name: Get list of changed files
         id: files
         run: |
-          git fetch origin ${{ github.base_ref }}
-          CHANGED_FILES=$(git diff --name-only FETCH_HEAD...HEAD | grep -E "\.(js|ts|tsx)$")
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          git fetch origin $BASE_SHA
+          CHANGED_FILES=$(git diff --name-only $BASE_SHA...$HEAD_SHA | grep -E "\.(js|ts|tsx)$")
           echo "::set-output name=changed::${CHANGED_FILES}"
 
       - name: Lint Changed Files
-        if: steps.files.outputs.changed != ''
         run: |
           CHANGED_FILES="${{ steps.files.outputs.changed }}"
-          echo "Linting changed files..."
-          yarn lint $CHANGED_FILES
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Linting changed files..."
+            yarn lint $CHANGED_FILES
+          else
+            echo "No JavaScript/TypeScript files to lint."
+          fi
