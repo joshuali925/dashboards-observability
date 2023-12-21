@@ -1,6 +1,6 @@
 name: Lint
 
-on:  [push, pull_request]
+on:  [pull_request]
 
 env:
   PLUGIN_NAME: dashboards-observability
@@ -57,12 +57,8 @@ jobs:
       - name: Get list of changed files
         id: files
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git fetch origin ${{ github.base_ref }}
-            CHANGED_FILES=$(git diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD ${{ github.base_ref }}) | grep -E "\.(js|ts|tsx)$")
-          else
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E "\.(js|ts|tsx)$")
-          fi
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only FETCH_HEAD...HEAD | grep -E "\.(js|ts|tsx)$")
           echo "::set-output name=changed::${CHANGED_FILES}"
 
       - name: Lint Changed Files
