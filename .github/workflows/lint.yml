@@ -22,7 +22,8 @@ jobs:
       - name: Checkout dashboards observability
         uses: actions/checkout@v2
         with:
-          path: OpenSearch-Dashboards/plugins/${{ env.PLUGIN_NAME }}         
+          path: OpenSearch-Dashboards/plugins/${{ env.PLUGIN_NAME }}
+          fetch-depth: 0
 
       - name: Get node and yarn versions
         working-directory: ${{ env.WORKING_DIR }}
@@ -53,6 +54,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
       
       - name: Get list of changed files
         id: files
