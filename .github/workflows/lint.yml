@@ -1,6 +1,8 @@
 name: Lint
 
-on:  [push, pull_request]
+on: 
+  pull_request_target:
+    types: [opened, synchronize, reopened]
 
 env:
   PLUGIN_NAME: dashboards-observability
@@ -48,14 +50,21 @@ jobs:
         run:
           yarn osd bootstrap
 
-      - name: lint code base
-        working-directory: OpenSearch-Dashboards/plugins/${{ env.PLUGIN_NAME }}
+      - name: Checkout the head of the pull request
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+  
+      - name: Get list of changed files
+        id: files
         run: |
-          git fetch origin main
-          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep -E "\.(js|ts|tsx)$")
-          if [ -n "$CHANGED_FILES" ]; then
-            echo "Linting changed files..."
-            yarn lint $CHANGED_FILES
-          else
-            echo "No JavaScript/TypeScript files changed."
-          fi
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD ${{ github.base_ref }}) | grep -E "\.(js|ts|tsx)$")
+          echo "::set-output name=changed::${CHANGED_FILES}"
+
+      - name: Lint Changed Files
+        if: steps.files.outputs.changed != ''
+        run: |
+          CHANGED_FILES="${{ steps.files.outputs.changed }}"
+          echo "Linting changed files..."
+          yarn lint $CHANGED_FILES
