@@ -74,3 +74,5 @@ jobs:
           else
             echo "No JavaScript/TypeScript files to lint."
           fi
+        working-directory: OpenSearch-Dashboards/plugins/${{ env.PLUGIN_NAME }}
+        
