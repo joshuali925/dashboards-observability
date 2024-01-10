@@ -54,6 +54,10 @@ export function registerQueryAssistRoutes(router: IRouter, config: Observability
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      return response.ok({
+        body:
+          'source=opensearch_dashboards_sample_data_logs| where LIKE(response, "4%") OR LIKE(response, "5%") | stats count() as errors',
+      });
       if (!pplAgentId)
         return response.custom({
           statusCode: 400,
@@ -116,6 +120,12 @@ export function registerQueryAssistRoutes(router: IRouter, config: Observability
       request,
       response
     ): Promise<IOpenSearchDashboardsResponse<any | ResponseError>> => {
+      return response.ok({
+        body: {
+          summary: 'test summary',
+          suggestedQuestions: ['1', '2'],
+        },
+      });
       if (!responseSummaryAgentId || !ErrorSummaryAgentId)
         return response.custom({
           statusCode: 400,
