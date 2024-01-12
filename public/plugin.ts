@@ -336,6 +336,7 @@ export class ObservabilityPlugin
     coreRefs.application = core.application;
     coreRefs.dashboard = startDeps.dashboard;
     coreRefs.queryAssistEnabled = this.config.query_assist.enabled;
+    console.log('❗coreRefs initialized');
 
     const { dataSourceService, dataSourceFactory } = startDeps.data.dataSources;
 

@@ -18,6 +18,7 @@ import {
   SELECTED_PATTERN_FIELD,
   SELECTED_TIMESTAMP,
 } from '../../../../../common/constants/explorer';
+import { coreRefs } from '../../../../framework/core_refs';
 import { initialTabId } from '../../../../framework/redux/store/shared_state';
 
 const initialQueryState = {
@@ -31,6 +32,8 @@ const initialQueryState = {
   [SELECTED_DATE_RANGE]: ['now-40y', 'now'],
   [OLLY_QUERY_ASSISTANT]: '',
 };
+console.log('❗initialQueryState:', initialQueryState);
+console.log('❗coreRefs:', coreRefs);
 
 const appBaseQueryState = {
   [RAW_QUERY]: '',
