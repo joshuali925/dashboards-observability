@@ -25,17 +25,15 @@ import TimestampUtils from 'public/services/timestamp/timestamp';
 import React, { ReactChild, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { last } from 'lodash';
 import { VisualizationType } from 'common/types/custom_panels';
 import { TracesContent } from '../../../components/trace_analytics/components/traces/traces_content';
-import { DashboardContent } from '../../../components/trace_analytics/components/dashboard/dashboard_content';
 import { ServicesContent } from '../../trace_analytics/components/services/services_content';
 import {
   filtersToDsl,
   PanelTitle,
 } from '../../../../public/components/trace_analytics/components/common/helper_functions';
 import { SpanDetailTable } from '../../../../public/components/trace_analytics/components/traces/span_detail_table';
-import { Explorer } from '../../event_analytics/explorer/explorer';
+import { LegacyExplorer } from '../../event_analytics/explorer/legacy_explorer';
 import { Configuration } from './configuration';
 import {
   TAB_CONFIG_ID,
@@ -43,7 +41,6 @@ import {
   TAB_LOG_ID,
   TAB_LOG_TITLE,
   TAB_OVERVIEW_ID,
-  TAB_OVERVIEW_TITLE,
   TAB_PANEL_ID,
   TAB_PANEL_TITLE,
   TAB_SERVICE_ID,
@@ -66,7 +63,6 @@ import { SpanDetailFlyout } from '../../../../public/components/trace_analytics/
 import { TraceDetailFlyout } from './flyout_components/trace_detail_flyout';
 import { fetchAppById, initializeTabData } from '../helpers/utils';
 import { QueryManager } from '../../../../common/query_manager/ppl_query_manager';
-import { observabilityApplicationsID } from '../../../../common/constants/shared';
 
 const searchBarConfigs = {
   [TAB_EVENT_ID]: {
@@ -348,7 +344,7 @@ export function Application(props: AppDetailProps) {
 
   const getLog = () => {
     return (
-      <Explorer
+      <LegacyExplorer
         key={`explorer_application-analytics-tab`}
         pplService={pplService}
         dslService={dslService}

@@ -130,7 +130,7 @@ import { ExplorerVisualizations } from './visualizations';
 import { CountDistribution } from './visualizations/count_distribution';
 import { DirectQueryVisualization } from './visualizations/direct_query_vis';
 
-export const Explorer = ({
+export const LegacyExplorer = ({
   pplService,
   dslService,
   tabId,
@@ -653,7 +653,7 @@ export const Explorer = ({
       indexFields: explorerFields,
       userConfigs: {
         ...visualizationSettings,
-        ...processMetricsData(explorerData.schema),
+        ...processMetricsData(explorerData.schema, visualizationSettings),
       },
       appData: { fromApp: appLogEvents },
       explorer: { explorerData, explorerFields, query, http, pplService },

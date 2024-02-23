@@ -54,6 +54,7 @@ import {
 } from '../common/utils';
 import { Search } from './components/common/search/search';
 import { DirectSearch } from './components/common/search/sql_search';
+import { SearchBar } from './components/common/search/search_bar';
 import { convertLegacyNotebooksUrl } from './components/notebooks/components/helpers/legacy_route_helpers';
 import { convertLegacyTraceAnalyticsUrl } from './components/trace_analytics/components/common/legacy_route_helpers';
 import { registerAsssitantDependencies } from './dependencies/register_assistant';
@@ -154,7 +155,7 @@ export class ObservabilityPlugin
           QueryEditor: null,
           ConfigEditor: null,
           SidePanel: null,
-          SearchBar: Search,
+          SearchBar,
         },
         services: {},
       }
